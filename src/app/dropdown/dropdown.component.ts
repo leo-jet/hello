@@ -96,16 +96,8 @@ export class DropdownComponent {
   close() {
     this.open.set(false);
     this.menuStyles = {};
-    // If the menu DOM node was moved to document.body, remove it to clean up
-    try {
-      const menuEl = this.menu?.nativeElement;
-      if (menuEl && menuEl.parentElement === document.body) {
-        document.body.removeChild(menuEl);
-        this._menuAppendedToBody = false;
-      }
-    } catch (e) {
-      // ignore
-    }
+    // remove menu from body if appended
+    this.removeMenuFromBody();
   }
 
   onOutsideClick(event: Event) {
@@ -187,6 +179,10 @@ export class DropdownComponent {
   }
 
   ngOnDestroy(): void {
+    this.removeMenuFromBody();
+  }
+
+  private removeMenuFromBody() {
     try {
       const menuEl = this.menu?.nativeElement;
       if (menuEl && menuEl.parentElement === document.body) {

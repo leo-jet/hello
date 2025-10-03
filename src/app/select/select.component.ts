@@ -31,6 +31,7 @@ export class SelectComponent {
 
   @ViewChild('button', { static: true }) button!: ElementRef<HTMLButtonElement>;
   @ViewChild('menu') menu!: ElementRef<HTMLUListElement>;
+  @ViewChild('panel') panel!: ElementRef<HTMLDivElement>;
 
   private _menuAppendedToBody = false;
 
@@ -52,9 +53,42 @@ export class SelectComponent {
   private _open$ = new BehaviorSubject<boolean>(this.open());
   open$ = this._open$.asObservable();
 
+  // hovered option used to render the secondary panel
+  hoveredOption: { value: unknown; label?: string } | null = null;
+  panelStyles: { [k: string]: any } = {};
+  private _panelAppendedToBody = false;
+
   constructor() {
     effect(() => this._selectedLabel$.next(this.selectedLabel()));
     effect(() => this._open$.next(this.open()));
+  }
+
+  onOptionMouseOver(opt: { value: unknown; label?: string }, event?: MouseEvent) {
+    // open the secondary panel showing option details
+    this.hoveredOption = opt as any;
+    try {
+      const btn = event?.currentTarget as HTMLElement | undefined;
+      const rect = btn ? btn.getBoundingClientRect() : undefined;
+      if (rect) {
+        this.panelStyles = {
+          position: 'fixed',
+          top: `${rect.top}px`,
+          left: `${rect.right + 8}px`,
+          zIndex: 2147483647,
+        };
+        // append panel to body so it overlays
+        const panelEl = this.panel?.nativeElement;
+        if (panelEl && panelEl.parentElement !== document.body) {
+          try { document.body.appendChild(panelEl); this._panelAppendedToBody = true; } catch (e) {}
+        }
+      }
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  onOptionMouseLeave() {
+    // hide the secondary panel
   }
 
   selectOption(opt: { value: unknown; label: string; icon?: string; img_path?: string }) {
@@ -63,13 +97,7 @@ export class SelectComponent {
     this.open.set(false);
     this.menuStyles = {};
     // remove from body if appended
-    try {
-      const menuEl = this.menu?.nativeElement;
-      if (menuEl && menuEl.parentElement === document.body) {
-        document.body.removeChild(menuEl);
-        this._menuAppendedToBody = false;
-      }
-    } catch (e) {}
+    this.removeMenuFromBody();
   }
 
   toggle() {
@@ -84,13 +112,7 @@ export class SelectComponent {
   close() {
     this.open.set(false);
     this.menuStyles = {};
-    try {
-      const menuEl = this.menu?.nativeElement;
-      if (menuEl && menuEl.parentElement === document.body) {
-        document.body.removeChild(menuEl);
-        this._menuAppendedToBody = false;
-      }
-    } catch (e) {}
+    this.removeMenuFromBody();
   }
 
   onOutsideClick(event: Event) {
@@ -146,6 +168,17 @@ export class SelectComponent {
   }
 
   ngOnDestroy(): void {
+    this.removeMenuFromBody();
+    try {
+      const panelEl = this.panel?.nativeElement;
+      if (panelEl && panelEl.parentElement === document.body) {
+        document.body.removeChild(panelEl);
+        this._panelAppendedToBody = false;
+      }
+    } catch (e) {}
+  }
+
+  private removeMenuFromBody() {
     try {
       const menuEl = this.menu?.nativeElement;
       if (menuEl && menuEl.parentElement === document.body) {

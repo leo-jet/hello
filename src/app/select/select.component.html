@@ -1,84 +1,55 @@
 <div [class]="('inline-block ' + (hostClass || ''))">
-  @if (selectedLabel$ | async; as sLabel) {
-    <label class="block text-sm text-gray-600 mb-1">{{ sLabel }}</label>
+  <!-- Unified select: single markup path, display label if available -->
+  <label class="block text-sm text-gray-600 mb-1">{{ (selectedLabel$ | async) || 'Select' }}</label>
 
-    <div>
-      <button
-        #button
-        type="button"
-        (click)="toggle()"
-        (keydown)="($event.key === 'Escape') && close()"
-        [class]="('inline-flex items-center gap-2 px-3 py-2 border rounded ' + (buttonClass || ''))"
-        aria-haspopup="listbox"
-        [attr.aria-expanded]="(open$ | async)"
-      >
-        <span class="flex-1 text-left">{{ sLabel || 'Select' }}</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="ml-2">
-          <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </button>
+  <div>
+    <button
+      #button
+      type="button"
+      (click)="toggle()"
+      (keydown)="($event.key === 'Escape') && close()"
+      [class]="('inline-flex items-center gap-2 px-3 py-2 border rounded ' + (buttonClass || ''))"
+      aria-haspopup="listbox"
+      [attr.aria-expanded]="(open$ | async)"
+    >
+      <span class="flex-1 text-left">{{ (selectedLabel$ | async) || 'Select' }}</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="ml-2">
+        <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
 
-      @if (open$ | async) {
-        <ul role="listbox" [ngStyle]="menuStyles" [class]="'fixed bg-white rounded-md shadow-lg py-1 ' + (menuClass || '')">
+    @if (open$ | async) {
+      <ul role="listbox" [ngStyle]="menuStyles" [class]="'fixed bg-white rounded-md shadow-lg py-1 ' + (menuClass || '')">
           @for (opt of options; track opt.value) {
-            <li role="option">
-              <button
-                type="button"
-                (click)="selectOption(opt)"
-                [class]="(itemClass || '') + ' flex items-center w-full text-left px-4 py-2'"
-              >
-                @if (opt.img_path) {
-                  <img [src]="opt.img_path" class="w-5 h-5 mr-3 rounded-full flex-shrink-0" />
-                } @else if (!opt.img_path && opt.icon) {
-                  <span class="inline-flex items-center justify-center w-5 h-5 mr-3 flex-shrink-0">{{ opt.icon }}</span>
-                }
-                <span class="truncate">{{ opt.label }}</span>
-              </button>
-            </li>
-          } @empty {
-            <li class="px-4 py-2 text-sm text-gray-500">No options</li>
-          }
-        </ul>
-      }
-    </div>
-  } @else {
-    <label class="block text-sm text-gray-600 mb-1">Select</label>
+          <li role="option" (mouseover)="onOptionMouseOver(opt, $event)" (mouseout)="onOptionMouseLeave()">
+            <button
+              type="button"
+              (click)="selectOption(opt)"
+              [class]="(itemClass || '') + ' flex items-center w-full text-left px-4 py-2'"
+            >
+              @if (opt.img_path) {
+                <img [src]="opt.img_path" class="w-5 h-5 mr-3 rounded-full flex-shrink-0" />
+              } @else if (!opt.img_path && opt.icon) {
+                <span class="inline-flex items-center justify-center w-5 h-5 mr-3 flex-shrink-0">{{ opt.icon }}</span>
+              }
+              <span class="truncate">{{ opt.label }}</span>
+            </button>
+          </li>
+        } @empty {
+          <li class="px-4 py-2 text-sm text-gray-500">No options</li>
+        }
+          </ul>
 
-    <div class="relative">
-      <button
-        #button
-        type="button"
-        (click)="toggle()"
-        (keydown)="($event.key === 'Escape') && close()"
-        class="inline-flex items-center gap-2 px-3 py-2 border rounded"
-        [class]="buttonClass"
-        aria-haspopup="listbox"
-        [attr.aria-expanded]="(open$ | async)"
-      >
-        Select
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="ml-2">
-          <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </button>
-
-      @if (open$ | async) {
-        <ul role="listbox" [ngStyle]="menuStyles" [class]="'fixed bg-white rounded-md shadow-lg py-1 ' + (menuClass || '')">
-          @for (opt of options; track opt.value) {
-            <li role="option">
-              <button type="button" (click)="selectOption(opt)" [class]="itemClass + ' block w-full text-left px-4 py-2'">
-                @if (opt.img_path) {
-                  <img [src]="opt.img_path" class="inline-block w-4 h-4 mr-2 rounded-full" />
-                } @else if (!opt.img_path && opt.icon) {
-                  <span class="inline-block w-4 h-4 mr-2">{{ opt.icon }}</span>
-                }
-                {{ opt.label }}
-              </button>
-            </li>
-          } @empty {
-            <li class="px-4 py-2 text-sm text-gray-500">No options</li>
-          }
-        </ul>
-      }
-    </div>
-  }
+          <!-- secondary panel element (appended to body) -->
+          <div #panel [ngStyle]="panelStyles" class="w-56 bg-white border rounded-md shadow p-3" [style.display]="hoveredOption ? 'block' : 'none'">
+            @if (hoveredOption) {
+              <div>
+                <div class="text-sm font-medium mb-2">Details</div>
+                <div class="text-xs text-gray-600"><strong>Value:</strong> {{ hoveredOption.value }}</div>
+                <div class="text-xs text-gray-600"><strong>Label:</strong> {{ hoveredOption.label }}</div>
+              </div>
+            }
+          </div>
+    }
+  </div>
 </div>
