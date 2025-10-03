@@ -1,23 +1,72 @@
 <main>
-  <div style="margin-top: 1rem">
-    <app-dropdown [buttonClass]="'bg-green-600'" [options]="dropdownOptions" (selection)="onDropdownSelect($event)"></app-dropdown>
-
-    <div class="mt-4 text-sm text-gray-700">
-      Selected (value): <strong>{{ selectedFromDropdown || 'none' }}</strong>
-    </div>
-
-    <hr class="my-6" />
-    <h3 class="text-sm font-medium">Select (demo)</h3>
-    <app-select [options]="dropdownOptions" (selection)="onDropdownSelect($event)"></app-select>
-
-    <hr class="my-6" />
-
-    <h3 class="text-sm font-medium">Dropdown returning full object</h3>
-    <app-dropdown [buttonClass]="'bg-indigo-600'" [options]="dropdownOptions" [returnObject]="true" (selection)="onDropdownSelectObject($event)"></app-dropdown>
-
-    <div class="mt-4 text-sm text-gray-700">
-      Selected (object): <pre>{{ selectedObjectFromDropdown | json }}</pre>
-    </div>
+  <div class="mt-4 px-4">
+    <app-input-field
+      placeholder="type your message here"
+      (valueChange)="onDraftChange($event)"
+    >
+      <app-menu
+        iconClass="fa-solid fa-plus"
+        buttonClass="text-gray-700"
+        placement="bottom"
+        prepend
+      >
+        <app-list hostClass="shadow-sm">
+          <app-list-item>
+            <div start>
+              <app-icon-button
+                iconClass="fa-solid fa-wand-magic-sparkles"
+                buttonClass="w-8 h-8 bg-gray-100"
+              ></app-icon-button>
+            </div>
+            <app-select
+              [options]="dropdownOptions"
+              (selection)="onModelChange($event)"
+              [returnObject]="true"
+            ></app-select>
+          </app-list-item>
+          <app-list-item>
+            <div start>
+              <app-icon-button
+                iconClass="fa-solid fa-file"
+                buttonClass="w-8 h-8 bg-gray-100"
+              ></app-icon-button>
+            </div>
+            <app-input-field
+              placeholder="Add files to process"
+              type="file"
+              multiple
+              (valueChange)="onFilesAdded($event)"
+            ></app-input-field>
+          </app-list-item>
+        </app-list>
+      </app-menu>
+      <div bottom>
+        <button
+          type="button"
+          class="flex items-center w-full text-left px-4 py-2"
+        >
+          <img
+            [src]="currentModelValue?.img_path"
+            class="w-5 h-5 mr-3 rounded-full flex-shrink-0"
+          />
+          <span class="truncate">{{ currentModelValue?.label }}</span>
+        </button>
+      </div>
+      @if (draftMessageValue.trim()) {
+      <app-icon-button
+        iconClass="fa-solid fa-paper-plane"
+        buttonClass="bg-gray-200 text-gray-600"
+        (click)="sendMessage()"
+        append
+      ></app-icon-button>
+      } @if (selectedFilesValue.length > 0) {
+      <div class="mt-2 text-sm text-gray-700" bottom>
+        @for (f of selectedFilesValue; track f.name) {
+        <span>{{ f.name }}</span>
+        }
+      </div>
+      }
+    </app-input-field>
   </div>
 </main>
 <router-outlet />

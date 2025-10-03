@@ -1,0 +1,20 @@
+<li
+  role="listitem"
+  [class]="'list-item flex items-center px-3 py-2 w-full hover:bg-gray-100 ' + (hostClass || '')"
+>
+  <div
+    class="flex items-center w-full"
+    (click)="onActivate()"
+    [class.cursor-pointer]="clickable"
+  >
+    <div class="mr-3" aria-hidden="true">
+      <ng-content select="[start]"></ng-content>
+    </div>
+
+    <div class="flex-1"><ng-content></ng-content></div>
+
+    <div class="ml-3" aria-hidden="true">
+      <ng-content select="[end]"></ng-content>
+    </div>
+  </div>
+</li>

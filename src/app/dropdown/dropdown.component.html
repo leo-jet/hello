@@ -25,22 +25,8 @@
     } @else {
       {{ selectedLabel() || 'Options' }}
     }
-    <svg
-      class="ml-1"
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M7 10l5 5 5-5"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-    </svg>
+    <!-- Font Awesome chevron (replace SVG). Ensure Font Awesome CSS is loaded in your app. -->
+    <i class="fa fa-chevron-down ml-1" aria-hidden="true"></i>
   </button>
   @if (open$ | async) {
   <ul

@@ -1,0 +1,7 @@
+/* Basic styling for input-field component */
+
+/* Make the clear button small and non-intrusive */
+button { background: transparent; border: none; cursor: pointer; }
+
+/* file name preview truncation */
+.input-file-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

@@ -1,0 +1,5 @@
+.list-item {
+  min-height: 44px;
+}
+
+/* hover state is handled with Tailwind classes in the template */

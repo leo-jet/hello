@@ -1,4 +1,18 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, computed, signal, effect, ViewChild, ElementRef, inject, OnDestroy } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy,
+  computed,
+  signal,
+  effect,
+  ViewChild,
+  ElementRef,
+  inject,
+  OnDestroy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 
@@ -12,15 +26,20 @@ import { BehaviorSubject } from 'rxjs';
   host: {
     '(document:click)': 'onOutsideClick($event)',
     '(window:resize)': 'onWindowResize()',
-    '(window:scroll)': 'onWindowScroll()'
-  }
+    '(window:scroll)': 'onWindowScroll()',
+  },
 })
 export class SelectComponent {
   // state
   open = signal(false);
   selectedValue = signal<unknown | null>(null);
 
-  @Input() options: Array<{ value: unknown; label: string; icon?: string; img_path?: string }> = [];
+  @Input() options: Array<{
+    value: unknown;
+    label: string;
+    icon?: string;
+    img_path?: string;
+  }> = [];
   @Input() hostClass = '';
   @Input() buttonClass = '';
   @Input() menuClass = '';
@@ -37,17 +56,20 @@ export class SelectComponent {
 
   // host element reference (available in class scope)
   private host = inject(ElementRef);
+  private cdr = inject(ChangeDetectorRef);
 
   // styles applied to the menu when open (fixed positioning)
   menuStyles: { [k: string]: any } = {};
 
   selectedLabel = computed(() => {
     const val = this.selectedValue();
-    const found = this.options?.find(o => o.value === val);
+    const found = this.options?.find((o) => o.value === val);
     return found ? found.label : null;
   });
 
-  private _selectedLabel$ = new BehaviorSubject<string | null>(this.selectedLabel());
+  private _selectedLabel$ = new BehaviorSubject<string | null>(
+    this.selectedLabel()
+  );
   selectedLabel$ = this._selectedLabel$.asObservable();
 
   private _open$ = new BehaviorSubject<boolean>(this.open());
@@ -63,9 +85,14 @@ export class SelectComponent {
     effect(() => this._open$.next(this.open()));
   }
 
-  onOptionMouseOver(opt: { value: unknown; label?: string }, event?: MouseEvent) {
+  onOptionMouseOver(
+    opt: { value: unknown; label?: string },
+    event?: MouseEvent
+  ) {
     // open the secondary panel showing option details
     this.hoveredOption = opt as any;
+    // ensure OnPush component picks up the change
+    try { this.cdr.markForCheck(); } catch (e) {}
     try {
       const btn = event?.currentTarget as HTMLElement | undefined;
       const rect = btn ? btn.getBoundingClientRect() : undefined;
@@ -79,7 +106,11 @@ export class SelectComponent {
         // append panel to body so it overlays
         const panelEl = this.panel?.nativeElement;
         if (panelEl && panelEl.parentElement !== document.body) {
-          try { document.body.appendChild(panelEl); this._panelAppendedToBody = true; } catch (e) {}
+          try {
+            document.body.appendChild(panelEl);
+            this._panelAppendedToBody = true;
+            try { this.cdr.detectChanges(); } catch(e) {}
+          } catch (e) {}
         }
       }
     } catch (e) {
@@ -89,9 +120,23 @@ export class SelectComponent {
 
   onOptionMouseLeave() {
     // hide the secondary panel
+    try {
+      const panelEl = this.panel?.nativeElement;
+      if (panelEl && panelEl.parentElement === document.body) {
+        document.body.removeChild(panelEl);
+        this._panelAppendedToBody = false;
+      }
+    } catch (e) {}
+    this.hoveredOption = null;
+    try { this.cdr.markForCheck(); } catch (e) {}
   }
 
-  selectOption(opt: { value: unknown; label: string; icon?: string; img_path?: string }) {
+  selectOption(opt: {
+    value: unknown;
+    label: string;
+    icon?: string;
+    img_path?: string;
+  }) {
     this.selectedValue.set(opt.value);
     this.selection.emit(this.returnObject ? opt : opt.value);
     this.open.set(false);
@@ -101,7 +146,7 @@ export class SelectComponent {
   }
 
   toggle() {
-    this.open.update(v => !v);
+    this.open.update((v) => !v);
     if (this.open()) {
       setTimeout(() => this.updateMenuPosition());
     } else {
@@ -141,9 +186,14 @@ export class SelectComponent {
     try {
       if (menuEl) {
         menuEl.style.width = 'auto';
-        const contentWidth = Math.ceil(menuEl.scrollWidth || menuEl.clientWidth || estimatedWidth);
+        const contentWidth = Math.ceil(
+          menuEl.scrollWidth || menuEl.clientWidth || estimatedWidth
+        );
         const maxAllowed = Math.max(100, window.innerWidth - 16);
-        estimatedWidth = Math.min(Math.max(contentWidth, estimatedWidth), maxAllowed);
+        estimatedWidth = Math.min(
+          Math.max(contentWidth, estimatedWidth),
+          maxAllowed
+        );
         if (left + estimatedWidth > window.innerWidth - 8) {
           left = Math.max(8, window.innerWidth - estimatedWidth - 8);
         }

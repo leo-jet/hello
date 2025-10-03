@@ -1,0 +1,66 @@
+<div
+  [class]="
+    'flex flex-col w-full rounded-full px-3 py-2 border ' + (hostClass || '')
+  "
+>
+  <div>
+    <ng-content select="[top]"> </ng-content>
+  </div>
+  <div>
+    <!-- prepend slot: projected content with attribute 'prepend' will render here -->
+
+    <div class="flex items-center">
+      <ng-content select="[prepend]"></ng-content>
+
+      @if (type === 'file') {
+      <!-- hidden native file input that we trigger programmatically -->
+      <input
+        #input
+        type="file"
+        [attr.id]="id || null"
+        [disabled]="disabled"
+        (change)="onFileChange($event)"
+        class="sr-only"
+      />
+
+      <!-- visible, text-like control that preserves the same design as the text input -->
+      <div
+        role="button"
+        tabindex="0"
+        (click)="openFilePicker()"
+        (keydown)="onVisibleKeydown($event)"
+        [class]="
+          'w-full px-3 focus:outline-none focus:ring-0 ' + (inputClass || '')
+        "
+        [attr.aria-disabled]="disabled"
+      >
+        <span class="text-gray-600">{{
+          placeholder || "Ajouter des fichiers"
+        }}</span>
+      </div>
+      } @if (type !== 'file') {
+      <input
+        #input
+        type="text"
+        [attr.id]="id || null"
+        [attr.placeholder]="placeholder"
+        [disabled]="disabled"
+        (input)="onInput($event)"
+        [class]="
+          'w-full px-3 focus:outline-none focus:ring-0 ' + (inputClass || '')
+        "
+      />
+      }
+
+      <!-- append slot: projected content with attribute 'append' will render here -->
+      <div>
+        <ng-content select="[append]"></ng-content>
+      </div>
+    </div>
+  </div>
+
+  <!-- bottom slot: projected content with attribute 'bottom' will render here -->
+  <div class="px-3">
+    <ng-content select="[bottom]"> </ng-content>
+  </div>
+</div>

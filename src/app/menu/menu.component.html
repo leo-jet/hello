@@ -1,0 +1,24 @@
+<div [class]="'inline-block relative ' + (hostClass || '')">
+  <button
+    #button
+    type="button"
+    (click)="openMenu()"
+    [attr.aria-label]="ariaLabel"
+    [class]="
+      'w-10 h-10 bg-gray-100 rounded-full inline-flex items-center justify-center ' +
+      (buttonClass || '')
+    "
+  >
+    <i [class]="iconClass" aria-hidden="true"></i>
+  </button>
+
+  @if (open()) {
+    <div
+      #panel
+      class="menu-panel mt-2"
+      [class.open-top]="placement === 'top'"
+    >
+      <ng-content></ng-content>
+    </div>
+  }
+</div>
