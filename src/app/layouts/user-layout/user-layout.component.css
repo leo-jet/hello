@@ -1,0 +1,51 @@
+/* UserLayout component styles */
+
+/* Sidebar styles */
+aside {
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Navigation hover effects */
+nav a:hover {
+  background-color: #f3f4f6;
+  transition: background-color 0.2s ease;
+}
+
+/* Active navigation item */
+nav a.active {
+  background-color: #3b82f6;
+  color: white;
+}
+
+nav a.active i {
+  color: white;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  aside {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    transform: translateX(-100%);
+  }
+  
+  aside.open {
+    transform: translateX(0);
+  }
+  
+  .main-content {
+    margin-left: 0;
+  }
+}
+
+/* Main content area */
+main {
+  min-height: calc(100vh - 73px); /* Adjust based on header height */
+}
+
+/* Header shadow */
+header {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}

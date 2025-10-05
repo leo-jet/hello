@@ -1,0 +1,71 @@
+<div class="min-h-screen bg-gray-100">
+  <!-- User Layout Sidebar -->
+  <div class="flex">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-lg min-h-screen">
+      <div class="p-4 border-b">
+        <h2 class="text-lg font-semibold text-gray-800">{{ title }}</h2>
+      </div>
+      
+      <!-- Navigation Menu -->
+      <nav class="mt-4">
+        <div class="px-4 space-y-2">
+          <a href="#" class="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-gray-100">
+            <i class="fa-solid fa-home mr-3" aria-hidden="true"></i>
+            Dashboard
+          </a>
+          <a href="#" class="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-gray-100">
+            <i class="fa-solid fa-user mr-3" aria-hidden="true"></i>
+            Profile
+          </a>
+          <a href="#" class="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-gray-100">
+            <i class="fa-solid fa-cog mr-3" aria-hidden="true"></i>
+            Settings
+          </a>
+          <a href="#" class="flex items-center px-3 py-2 text-gray-700 rounded-md hover:bg-gray-100">
+            <i class="fa-solid fa-bell mr-3" aria-hidden="true"></i>
+            Notifications
+          </a>
+        </div>
+      </nav>
+      
+      <!-- Additional sidebar content projection -->
+      <div class="mt-8">
+        <ng-content select="[sidebar]"></ng-content>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1">
+      <!-- Top Header Bar -->
+      <header class="bg-white shadow-sm border-b">
+        <div class="px-6 py-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <h1 class="text-xl font-semibold text-gray-900">
+                <ng-content select="[page-title]"></ng-content>
+              </h1>
+            </div>
+            <div class="flex items-center space-x-4">
+              <!-- User menu or actions -->
+              <ng-content select="[header-actions]"></ng-content>
+              
+              <!-- Default user menu -->
+              <div class="flex items-center space-x-2">
+                <img class="w-8 h-8 rounded-full" src="https://via.placeholder.com/32" alt="User avatar">
+                <span class="text-sm text-gray-700">User</span>
+                <i class="fa-solid fa-chevron-down text-xs text-gray-500" aria-hidden="true"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="p-6">
+        <ng-content></ng-content>
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </div>
+</div>
