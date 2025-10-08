@@ -23,15 +23,41 @@ export class InputFieldComponent {
 
   @Output() valueChange = new EventEmitter<string | FileList | File | null>();
 
-  @ViewChild('input', { static: false }) input!: ElementRef<HTMLInputElement>;
+  @ViewChild('input', { static: false }) input!: ElementRef<HTMLTextAreaElement | HTMLInputElement>;
 
   // local value for binding (string for text, FileList for file)
   private _value = signal<string | FileList | null>(null);
 
   onInput(e: Event) {
-    const v = (e.target as HTMLInputElement).value;
+    const target = e.target as HTMLTextAreaElement | HTMLInputElement;
+    const v = target.value;
     this._value.set(v);
     this.valueChange.emit(v);
+
+    // Auto-resize pour textarea
+    if (target.tagName === 'TEXTAREA') {
+      this.autoResize(target as HTMLTextAreaElement);
+    }
+  }
+
+  private autoResize(textarea: HTMLTextAreaElement) {
+    // Reset height to auto to get the actual scrollHeight
+    textarea.style.height = 'auto';
+
+    // Calculate new height (min 1 row, max 200px)
+    const minHeight = parseInt(getComputedStyle(textarea).lineHeight) || 20;
+    const maxHeight = 200;
+    const newHeight = Math.min(Math.max(textarea.scrollHeight, minHeight), maxHeight);
+
+    // Set the new height
+    textarea.style.height = newHeight + 'px';
+
+    // Add or remove overflow based on max height
+    if (textarea.scrollHeight > maxHeight) {
+      textarea.style.overflowY = 'auto';
+    } else {
+      textarea.style.overflowY = 'hidden';
+    }
   }
 
   onFileChange(e: Event) {
@@ -47,6 +73,13 @@ export class InputFieldComponent {
       this.input.nativeElement.value = '';
       this._value.set(null);
       this.valueChange.emit(null);
+
+      // Reset textarea height if it's a textarea
+      if (this.input.nativeElement.tagName === 'TEXTAREA') {
+        const textarea = this.input.nativeElement as HTMLTextAreaElement;
+        textarea.style.height = 'auto';
+        textarea.style.overflowY = 'hidden';
+      }
     }
   }
 

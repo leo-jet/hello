@@ -1,0 +1,26 @@
+/* Styles pour SidebarNavComponent */
+
+/* Titre de section avec effet de survol */
+.nav-section-title {
+  transition: color 0.3s ease-in-out;
+}
+
+.nav-section-title:hover {
+  color: rgb(59, 130, 246);
+}
+
+/* Animation pour les éléments de navigation */
+.nav-list {
+  animation: slideInLeft 0.5s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

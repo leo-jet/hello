@@ -12,6 +12,24 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'chat',
+    loadComponent: () => import('./layouts/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    children: [
+      {
+        path: 'basic',
+        loadComponent: () => import('./pages/chat-basic/chat-basic.component').then(m => m.ChatBasicComponent)
+      },
+      {
+        path: 'advanced',
+        loadComponent: () => import('./pages/chat-advanced/chat-advanced.component').then(m => m.ChatAdvancedComponent)
+      },
+      {
+        path: 'rag',
+        loadComponent: () => import('./pages/chat-rag/chat-rag.component').then(m => m.ChatRagComponent)
+      }
+    ]
+  },
+  {
     path: 'profile',
     loadComponent: () => import('./layouts/user-layout/user-layout.component').then(m => m.UserLayoutComponent),
     children: [

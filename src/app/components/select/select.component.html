@@ -1,24 +1,22 @@
-<div [class]="'inline-block ' + (hostClass || '')">
-  <!-- Unified select: single markup path, display label if available -->
-  <label class="block text-sm text-gray-600 mb-1">{{
-    (selectedLabel$ | async) || "Select"
-  }}</label>
-
+<div class="inline-block">
   <div>
     <button
       #button
       type="button"
-      (click)="toggle()"
+      (click)="toggle(); $event.stopPropagation()"
       (keydown)="$event.key === 'Escape' && close()"
       [class]="
         'inline-flex items-center gap-2 px-3 py-2 border rounded ' +
         (buttonClass || '')
       "
       aria-haspopup="listbox"
-      [attr.aria-expanded]="open$ | async"
+      [attr.aria-expanded]="open()"
     >
+      @if (selectedIcon()) {
+        <span class="text-base">{{ selectedIcon() }}</span>
+      }
       <span class="flex-1 text-left">{{
-        (selectedLabel$ | async) || "Select"
+        selectedLabel() || placeholder
       }}</span>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="ml-2">
         <path
@@ -31,18 +29,16 @@
       </svg>
     </button>
 
-    @if (open$ | async) {
+    @if (open()) {
     <ul
+      #menu
       role="listbox"
+      (click)="$event.stopPropagation()"
       [ngStyle]="menuStyles"
       [class]="'fixed bg-white rounded-md shadow-lg py-1 ' + (menuClass || '')"
     >
-      @for (opt of options; track opt.value) {
-      <li
-        role="option"
-        (mouseover)="onOptionMouseOver(opt, $event)"
-        (mouseout)="onOptionMouseLeave()"
-      >
+      @for (opt of normalizedOptions; track getValue(opt)) {
+      <li role="option">
         <button
           type="button"
           (click)="selectOption(opt)"
@@ -50,44 +46,24 @@
             (itemClass || '') + ' flex items-center w-full text-left px-4 py-2'
           "
         >
-          @if (opt.img_path) {
+          @if (getImage(opt)) {
           <img
-            [src]="opt.img_path"
+            [src]="getImage(opt)"
             class="w-5 h-5 mr-3 rounded-full flex-shrink-0"
           />
-          } @else if (!opt.img_path && opt.icon) {
+          } @else if (!getImage(opt) && getIcon(opt)) {
           <span
             class="inline-flex items-center justify-center w-5 h-5 mr-3 flex-shrink-0"
-            >{{ opt.icon }}</span
+            >{{ getIcon(opt) }}</span
           >
           }
-          <span class="truncate">{{ opt.label }}</span>
+          <span class="truncate">{{ getLabel(opt) }}</span>
         </button>
       </li>
       } @empty {
       <li class="px-4 py-2 text-sm text-gray-500">No options</li>
       }
     </ul>
-
-    <!-- secondary panel element (appended to body) -->
-    <div
-      #panel
-      [ngStyle]="panelStyles"
-      class="w-56 bg-white border rounded-md shadow p-3"
-      [style.display]="hoveredOption ? 'block' : 'none'"
-    >
-      @if (hoveredOption) {
-      <div>
-        <div class="text-sm font-medium mb-2">Details</div>
-        <div class="text-xs text-gray-600">
-          <strong>Value:</strong> {{ hoveredOption.value }}
-        </div>
-        <div class="text-xs text-gray-600">
-          <strong>Label:</strong> {{ hoveredOption.label }}
-        </div>
-      </div>
-      }
-    </div>
     }
   </div>
 </div>

@@ -1,0 +1,70 @@
+/* Styles pour OverlayComponent */
+
+/* Overlay avec effet de backdrop blur */
+.overlay {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Animation d'entrée/sortie */
+.overlay-enter {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.overlay-exit {
+  animation: fadeOut 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Effet de vague au clic */
+.overlay-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.overlay-ripple::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* Styles pour les différents niveaux d'opacité */
+.overlay-light {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.overlay-medium {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.overlay-dark {
+  background-color: rgba(0, 0, 0, 0.7);
+}

@@ -6,15 +6,12 @@ import {
   ChangeDetectionStrategy,
   computed,
   signal,
-  effect,
   ViewChild,
   ElementRef,
   inject,
   OnDestroy,
-  ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-select',
@@ -23,182 +20,161 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './select.component.html',
   styleUrls: ['./select.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {
-    '(document:click)': 'onOutsideClick($event)',
-    '(window:resize)': 'onWindowResize()',
-    '(window:scroll)': 'onWindowScroll()',
-  },
 })
-export class SelectComponent {
-  // state
-  open = signal(false);
-  selectedValue = signal<unknown | null>(null);
-
-  @Input() options: Array<{
-    value: unknown;
-    label: string;
-    icon?: string;
-    img_path?: string;
-  }> = [];
-  @Input() hostClass = '';
+export class SelectComponent implements OnDestroy {
+  @Input() options: any[] = [];
+  @Input() valueField = 'value';
+  @Input() labelField = 'label';
+  @Input() iconField = 'icon';
+  @Input() imageField = 'img_path';
   @Input() buttonClass = '';
   @Input() menuClass = '';
   @Input() itemClass = '';
   @Input() returnObject = false;
+  @Input() placeholder = 'Select';
+  @Input() openUpward = false;
+
+  @Input() set value(val: unknown) {
+    this.selectedValue.set(val);
+  }
 
   @Output() selection = new EventEmitter<unknown>();
 
+  open = signal(false);
+  selectedValue = signal<unknown | null>(null);
+
   @ViewChild('button', { static: true }) button!: ElementRef<HTMLButtonElement>;
   @ViewChild('menu') menu!: ElementRef<HTMLUListElement>;
-  @ViewChild('panel') panel!: ElementRef<HTMLDivElement>;
 
-  private _menuAppendedToBody = false;
-
-  // host element reference (available in class scope)
   private host = inject(ElementRef);
-  private cdr = inject(ChangeDetectorRef);
-
-  // styles applied to the menu when open (fixed positioning)
+  private documentClickHandler = this.handleDocumentClick.bind(this);
   menuStyles: { [k: string]: any } = {};
 
   selectedLabel = computed(() => {
     const val = this.selectedValue();
-    const found = this.options?.find((o) => o.value === val);
-    return found ? found.label : null;
+    const found = this.normalizedOptions?.find((o) => this.getValue(o) === val);
+    return found ? this.getLabel(found) : null;
   });
 
-  private _selectedLabel$ = new BehaviorSubject<string | null>(
-    this.selectedLabel()
-  );
-  selectedLabel$ = this._selectedLabel$.asObservable();
+  selectedIcon = computed(() => {
+    const val = this.selectedValue();
+    const found = this.normalizedOptions?.find((o) => this.getValue(o) === val);
+    return found ? this.getIcon(found) : null;
+  });
 
-  private _open$ = new BehaviorSubject<boolean>(this.open());
-  open$ = this._open$.asObservable();
-
-  // hovered option used to render the secondary panel
-  hoveredOption: { value: unknown; label?: string } | null = null;
-  panelStyles: { [k: string]: any } = {};
-  private _panelAppendedToBody = false;
-
-  constructor() {
-    effect(() => this._selectedLabel$.next(this.selectedLabel()));
-    effect(() => this._open$.next(this.open()));
+  get normalizedOptions(): any[] {
+    return this.options.map(option => {
+      if (typeof option === 'object' && option !== null) {
+        return option;
+      }
+      return {
+        [this.valueField]: option,
+        [this.labelField]: option.toString()
+      };
+    });
   }
 
-  onOptionMouseOver(
-    opt: { value: unknown; label?: string },
-    event?: MouseEvent
-  ) {
-    // open the secondary panel showing option details
-    this.hoveredOption = opt as any;
-    // ensure OnPush component picks up the change
-    try { this.cdr.markForCheck(); } catch (e) {}
-    try {
-      const btn = event?.currentTarget as HTMLElement | undefined;
-      const rect = btn ? btn.getBoundingClientRect() : undefined;
-      if (rect) {
-        this.panelStyles = {
-          position: 'fixed',
-          top: `${rect.top}px`,
-          left: `${rect.right + 8}px`,
-          zIndex: 2147483647,
-        };
-        // append panel to body so it overlays
-        const panelEl = this.panel?.nativeElement;
-        if (panelEl && panelEl.parentElement !== document.body) {
-          try {
-            document.body.appendChild(panelEl);
-            this._panelAppendedToBody = true;
-            try { this.cdr.detectChanges(); } catch(e) {}
-          } catch (e) {}
-        }
+  constructor() {
+    this.setupDocumentClickListener();
+  }
+
+  getValue(item: any): unknown {
+    return this.getNestedValue(item, this.valueField);
+  }
+
+  getLabel(item: any): string {
+    return this.getNestedValue(item, this.labelField) || '';
+  }
+
+  getIcon(item: any): string | undefined {
+    return this.getNestedValue(item, this.iconField);
+  }
+
+  getImage(item: any): string | undefined {
+    return this.getNestedValue(item, this.imageField);
+  }
+
+  private getNestedValue(obj: any, path: string): any {
+    if (!obj || !path) return undefined;
+
+    if (typeof obj !== 'object') {
+      if (path === this.valueField || path === this.labelField) {
+        return obj;
       }
-    } catch (e) {
-      // ignore
+      return undefined;
+    }
+
+    return path.split('.').reduce((current, key) => {
+      return current && current[key] !== undefined ? current[key] : undefined;
+    }, obj);
+  }
+
+  private setupDocumentClickListener() {
+    // Utiliser setTimeout pour éviter que l'event listener soit ajouté immédiatement
+    setTimeout(() => {
+      document.addEventListener('click', this.documentClickHandler);
+    }, 0);
+  }
+
+  private handleDocumentClick(event: Event) {
+    if (!this.open()) return;
+
+    const target = event.target as Element;
+    const hostElement = this.host.nativeElement;
+    const menuElement = this.menu?.nativeElement;
+
+    // Vérifier si le clic est dans l'élément host ou dans le menu
+    const isInsideHost = hostElement && hostElement.contains(target);
+    const isInsideMenu = menuElement && menuElement.contains(target);
+
+    // Fermer seulement si le clic est en dehors du composant ET du menu
+    if (!isInsideHost && !isInsideMenu) {
+      this.close();
     }
   }
 
-  onOptionMouseLeave() {
-    // hide the secondary panel
-    try {
-      const panelEl = this.panel?.nativeElement;
-      if (panelEl && panelEl.parentElement === document.body) {
-        document.body.removeChild(panelEl);
-        this._panelAppendedToBody = false;
-      }
-    } catch (e) {}
-    this.hoveredOption = null;
-    try { this.cdr.markForCheck(); } catch (e) {}
-  }
-
-  selectOption(opt: {
-    value: unknown;
-    label: string;
-    icon?: string;
-    img_path?: string;
-  }) {
-    this.selectedValue.set(opt.value);
-    this.selection.emit(this.returnObject ? opt : opt.value);
-    this.open.set(false);
-    this.menuStyles = {};
-    // remove from body if appended
-    this.removeMenuFromBody();
+  selectOption(opt: any) {
+    const value = this.getValue(opt);
+    this.selectedValue.set(value);
+    this.selection.emit(this.returnObject ? opt : value);
+    this.close();
   }
 
   toggle() {
     this.open.update((v) => !v);
     if (this.open()) {
-      setTimeout(() => this.updateMenuPosition());
+      setTimeout(() => this.updateMenuPosition(), 0);
     } else {
-      this.menuStyles = {};
+      this.close();
     }
   }
 
   close() {
     this.open.set(false);
     this.menuStyles = {};
-    this.removeMenuFromBody();
-  }
-
-  onOutsideClick(event: Event) {
-    if (!this.host.nativeElement.contains(event.target)) {
-      this.close();
-    }
-  }
-
-  onWindowResize() {
-    if (this.open()) this.updateMenuPosition();
-  }
-
-  onWindowScroll() {
-    if (this.open()) this.updateMenuPosition();
   }
 
   private updateMenuPosition() {
     const btn = this.button?.nativeElement;
     if (!btn) return;
+
     const rect = btn.getBoundingClientRect();
     const menuEl = this.menu?.nativeElement;
-    const top = rect.bottom + 8;
+
+    let top = this.openUpward ? rect.top - (menuEl?.offsetHeight || 200) - 8 : rect.bottom + 8;
     let left = rect.left;
 
-    let estimatedWidth = Math.ceil(rect.width);
-    try {
-      if (menuEl) {
-        menuEl.style.width = 'auto';
-        const contentWidth = Math.ceil(
-          menuEl.scrollWidth || menuEl.clientWidth || estimatedWidth
-        );
-        const maxAllowed = Math.max(100, window.innerWidth - 16);
-        estimatedWidth = Math.min(
-          Math.max(contentWidth, estimatedWidth),
-          maxAllowed
-        );
-        if (left + estimatedWidth > window.innerWidth - 8) {
-          left = Math.max(8, window.innerWidth - estimatedWidth - 8);
-        }
+    // Ajustements pour éviter les débordements
+    if (this.openUpward && top < 8) {
+      top = rect.bottom + 8;
+    }
+
+    if (menuEl) {
+      const estimatedWidth = Math.max(rect.width, menuEl.scrollWidth);
+      if (left + estimatedWidth > window.innerWidth - 8) {
+        left = Math.max(8, window.innerWidth - estimatedWidth - 8);
       }
-    } catch (e) {}
+    }
 
     this.menuStyles = {
       position: 'fixed',
@@ -206,35 +182,10 @@ export class SelectComponent {
       left: `${left}px`,
       minWidth: `${rect.width}px`,
       zIndex: 2147483647,
-      pointerEvents: 'auto',
     };
-
-    try {
-      if (menuEl && menuEl.parentElement !== document.body) {
-        document.body.appendChild(menuEl);
-        this._menuAppendedToBody = true;
-      }
-    } catch (e) {}
   }
 
   ngOnDestroy(): void {
-    this.removeMenuFromBody();
-    try {
-      const panelEl = this.panel?.nativeElement;
-      if (panelEl && panelEl.parentElement === document.body) {
-        document.body.removeChild(panelEl);
-        this._panelAppendedToBody = false;
-      }
-    } catch (e) {}
-  }
-
-  private removeMenuFromBody() {
-    try {
-      const menuEl = this.menu?.nativeElement;
-      if (menuEl && menuEl.parentElement === document.body) {
-        document.body.removeChild(menuEl);
-        this._menuAppendedToBody = false;
-      }
-    } catch (e) {}
+    document.removeEventListener('click', this.documentClickHandler);
   }
 }

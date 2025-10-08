@@ -1,0 +1,38 @@
+<li class="mx-2">
+  <a
+    [routerLink]="routerLink"
+    [routerLinkActiveOptions]="routerLinkActiveOptions"
+    routerLinkActive="bg-blue-50 text-blue-700 border-r-2 border-blue-700 font-medium"
+    class="group flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-all duration-200 border-r-2 border-transparent relative overflow-hidden">
+
+    <!-- Shimmer effect -->
+    <div class="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+
+    <!-- Icon -->
+    <div class="mr-3 flex-shrink-0 text-current group-hover:scale-105 transition-transform duration-200">
+      <ng-content select="[slot=icon]"></ng-content>
+    </div>
+
+    <!-- Content -->
+    <div class="flex-1 min-w-0">
+      <div class="flex flex-col">
+        <span class="text-sm font-medium truncate">{{ title }}</span>
+        <span *ngIf="subtitle" class="text-xs text-gray-500 truncate group-hover:text-gray-600">{{ subtitle }}</span>
+      </div>
+    </div>
+
+    <!-- Badge -->
+    <div *ngIf="badge" class="ml-auto">
+      <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+            [ngClass]="{
+              'bg-green-100 text-green-800': badge.type === 'success',
+              'bg-blue-100 text-blue-800': badge.type === 'info',
+              'bg-yellow-100 text-yellow-800': badge.type === 'warning',
+              'bg-red-100 text-red-800': badge.type === 'error',
+              'bg-gray-100 text-gray-800': !badge.type || badge.type === 'default'
+            }">
+        {{ badge.text }}
+      </span>
+    </div>
+  </a>
+</li>

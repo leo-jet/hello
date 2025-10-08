@@ -1,0 +1,11 @@
+<!-- Footer -->
+<footer class="h-15 bg-white border-t border-gray-200 z-30 flex-shrink-0">
+  <div class="h-full px-4 flex items-center justify-center">
+    <div class="text-center text-sm text-gray-500 w-full">
+      <ng-content></ng-content>
+      <span *ngIf="!hasContent && showDefaultContent">
+        © {{ currentYear }} {{ companyName || 'Template Widget' }}. Tous droits réservés.
+      </span>
+    </div>
+  </div>
+</footer>

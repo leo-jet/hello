@@ -1,0 +1,12 @@
+/* Chat Advanced Component Styles */
+
+.advanced-chat-container {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+}
+
+.advanced-features {
+  border: 2px solid #10b981;
+  border-radius: 8px;
+}
+
+/* Additional styles can be added here */

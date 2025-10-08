@@ -1,0 +1,46 @@
+/* Styles pour HeaderComponent */
+
+/* Animation pour le bouton toggle */
+.toggle-button {
+  transition: all 0.2s ease-in-out;
+}
+
+.toggle-button:hover {
+  transform: scale(1.05);
+}
+
+/* Badge notification avec animation */
+.notification-badge {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Effet hover pour les boutons d'actions */
+.action-button {
+  transition: all 0.2s ease-in-out;
+}
+
+.action-button:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: rgb(59, 130, 246);
+}
+
+/* Style pour le titre responsive */
+.header-title {
+  transition: opacity 0.3s ease-in-out;
+}
+
+@media (min-width: 768px) {
+  .header-title {
+    opacity: 0;
+    pointer-events: none;
+  }
+}

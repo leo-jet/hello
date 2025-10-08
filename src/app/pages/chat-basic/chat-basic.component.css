@@ -1,0 +1,11 @@
+/* Chat Basic Component Styles */
+
+.chat-container {
+  background-color: #f9fafb;
+}
+
+.chat-header {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Additional styles can be added here */
