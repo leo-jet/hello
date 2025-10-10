@@ -1,19 +1,18 @@
 import { Component, ChangeDetectionStrategy, signal, computed, ContentChild, TemplateRef, AfterContentInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, RouterLink, Router } from '@angular/router';
+import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router';
 import { ChatModeService } from '../../services/chat-mode.service';
+import { filter } from 'rxjs/operators';
 
 // Import des composants réutilisables
 import { SidebarComponent } from '../../components/sidebar/sidebar/sidebar.component';
 import { HeaderComponent } from '../../components/header/header.component';
-import { FooterComponent } from '../../components/footer/footer.component';
 import { OverlayComponent } from '../../components/overlay/overlay.component';
 import { ListComponent } from '../../components/list/list.component';
 
 // Import des sous-composants du main-layout
 import { MainSidebarNavigationComponent } from './main-sidebar-navigation/main-sidebar-navigation.component';
 import { MainConversationItemComponent } from './main-conversation-item/main-conversation-item.component';
-import { MainChatInputComponent } from './main-chat-input/main-chat-input.component';
 
 // Interface pour les modèles AI
 interface AIModel {
@@ -32,12 +31,10 @@ interface AIModel {
     RouterOutlet,
     SidebarComponent,
     HeaderComponent,
-    FooterComponent,
     OverlayComponent,
     ListComponent,
     MainSidebarNavigationComponent,
-    MainConversationItemComponent,
-    MainChatInputComponent
+    MainConversationItemComponent
   ],
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.css'],
@@ -49,6 +46,9 @@ export class MainLayoutComponent implements AfterContentInit {
   // État de la sidebar
   sidebarOpen = signal(false);
 
+  // Route actuelle
+  currentRoute = signal<string>('');
+
   // Valeur du textarea pour contrôler l'état du bouton d'envoi
   messageValue = signal<string>('');
 
@@ -56,7 +56,15 @@ export class MainLayoutComponent implements AfterContentInit {
   constructor(
     private chatModeService: ChatModeService,
     private router: Router
-  ) {}
+  ) {
+    // Écouter les changements de route
+    this.currentRoute.set(this.router.url);
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      this.currentRoute.set(event.url);
+    });
+  }
 
   // État du menu expandable des modes de chat
   chatModesExpanded = signal(true);
@@ -356,9 +364,9 @@ export class MainLayoutComponent implements AfterContentInit {
    * Créer un nouveau chat
    */
   createNewChat() {
-    // TODO: Implémenter la navigation vers la page nouveau chat
-    console.log('Création d\'un nouveau chat');
-    // Exemple: this.router.navigate(['/chat/new']);
+    // Naviguer vers la page nouveau chat
+    this.router.navigate(['/chat/new']);
+    console.log('Navigation vers nouveau chat');
   }
 
   /**

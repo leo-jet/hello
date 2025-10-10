@@ -2,7 +2,7 @@
   <!-- Sidebar -->
   <app-sidebar [isOpen]="sidebarOpen()" (closeEvent)="closeSidebar()">
     <!-- Header de la sidebar -->
-    <div slot="header" class="p-4 border-b">
+    <div slot="header">
       <!-- Logo et titre -->
       <div class="mb-4 flex items-center space-x-2">
         <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
@@ -14,10 +14,12 @@
       <!-- Navigation principale -->
       <app-main-sidebar-navigation
         [currentChatMode]="currentChatMode()"
+        [currentRoute]="currentRoute()"
         [chatModes]="chatModes"
         [chatModesExpanded]="chatModesExpanded()"
         (homeClick)="navigateToHome()"
         (docsClick)="navigateToDocs()"
+        (newChatClick)="createNewChat()"
         (chatModeClick)="navigateToChatMode($event)"
         (toggleChatModes)="toggleChatModesMenu()"
       />
@@ -105,27 +107,8 @@
       </div>
     </main>
 
-    <!-- Footer avec ng-content -->
-    <app-footer
-      [companyName]="'Template Widget'"
-      [hasContent]="hasFooterContent()"
-    >
-      <app-main-chat-input
-        footer
-        [currentChatModeInfo]="currentChatModeInfo()"
-        [modelSelectOptions]="modelSelectOptions"
-        [reasoningLevelSelectOptions]="reasoningLevelSelectOptions"
-        [selectedModelId]="selectedModel().id"
-        [selectedReasoningLevel]="selectedReasoningLevel()"
-        [hasReasoning]="selectedModel().has_reasoning"
-        [isSendButtonDisabled]="isSendButtonDisabled"
-        (modelSelect)="onModelSelect($event)"
-        (reasoningLevelSelect)="onReasoningLevelSelect($event)"
-        (inputChange)="onFooterInputChange($event)"
-        (microphoneClick)="onMicrophoneClick()"
-        (sendMessage)="onSendMessage()"
-      />
-    </app-footer>
+    <!-- Footer optionnel -->
+    <ng-content select="[footer]"></ng-content>
   </div>
 
   <!-- Overlay pour mobile -->

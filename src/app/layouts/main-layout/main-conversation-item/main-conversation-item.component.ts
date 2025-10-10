@@ -1,5 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { ListItemComponent } from '../../../components/list-item/list-item.component';
 import { ListItemSectionComponent } from '../../../components/list-item-section/list-item-section.component';
 import { ListItemLabelComponent } from '../../../components/list-item-label/list-item-label.component';
@@ -31,8 +32,12 @@ export class MainConversationItemComponent {
   conversationClick = output<Conversation>();
   deleteClick = output<Conversation>();
 
+  constructor(private router: Router) {}
+
   onConversationClick() {
     this.conversationClick.emit(this.conversation());
+    // Rediriger vers la page de conversation
+    this.router.navigate(['/chat', this.conversation().id]);
   }
 
   onDeleteClick() {

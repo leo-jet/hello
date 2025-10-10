@@ -1,0 +1,42 @@
+<div class="flex flex-col h-full">
+  <!-- Zone de conversation (scroll) -->
+  <div class="flex-1 overflow-y-auto p-6 bg-gray-50">
+    <div class="max-w-4xl mx-auto space-y-6">
+      @for (message of messages(); track message.id) {
+        <div class="flex gap-4" [class.flex-row-reverse]="message.role === 'user'">
+          <!-- Avatar -->
+          <div class="flex-shrink-0">
+            @if (message.role === 'assistant') {
+              <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+                AI
+              </div>
+            } @else {
+              <div class="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center text-white font-semibold">
+                <i class="fas fa-user"></i>
+              </div>
+            }
+          </div>
+
+          <!-- Message content -->
+          <div class="flex-1 max-w-[80%]">
+            <div
+              class="rounded-lg px-4 py-3 shadow-sm"
+              [class.bg-blue-500]="message.role === 'user'"
+              [class.text-white]="message.role === 'user'"
+              [class.bg-white]="message.role === 'assistant'"
+              [class.text-gray-900]="message.role === 'assistant'"
+            >
+              <div class="whitespace-pre-wrap">{{ message.content }}</div>
+            </div>
+            <div
+              class="text-xs text-gray-500 mt-1 px-2"
+              [class.text-right]="message.role === 'user'"
+            >
+              {{ formatTimestamp(message.timestamp) }}
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

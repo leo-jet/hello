@@ -1,0 +1,12 @@
+<button
+  (click)="onCardClick()"
+  [class]="'w-full p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow text-left ' + hostClass()"
+>
+  <div class="flex items-start space-x-3">
+    <i [class]="icon() + ' ' + iconColor() + ' text-xl mt-1'" aria-hidden="true"></i>
+    <div>
+      <h3 class="font-medium text-gray-900 mb-1">{{ title() }}</h3>
+      <p class="text-sm text-gray-600">{{ description() }}</p>
+    </div>
+  </div>
+</button>

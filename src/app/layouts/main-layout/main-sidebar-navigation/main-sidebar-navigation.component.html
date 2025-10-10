@@ -1,8 +1,7 @@
-<app-list variant="navigation">
+<app-list [dense]="true">
   <!-- Bouton Accueil - Quasar-like Structure -->
   <app-list-item
-    variant="navigation"
-    [active]="!currentChatMode()"
+    [active]="isHomeActive()"
     (activate)="onHomeClick()"
   >
     <app-list-item-section [avatar]="true">
@@ -14,7 +13,7 @@
       <app-list-item-label [caption]="true">Retour à l'accueil</app-list-item-label>
     </app-list-item-section>
 
-    @if (!currentChatMode()) {
+    @if (isHomeActive()) {
       <app-list-item-section [side]="true">
         <i class="fas fa-check text-sm"></i>
       </app-list-item-section>
@@ -24,7 +23,7 @@
   <!-- Bouton Documentation -->
   <app-list-item
     variant="navigation"
-    [active]="false"
+    [active]="isDocsActive()"
     (activate)="onDocsClick()"
   >
     <app-list-item-section [avatar]="true">
@@ -35,6 +34,33 @@
       <app-list-item-label>Docs</app-list-item-label>
       <app-list-item-label [caption]="true">Documentation des composants</app-list-item-label>
     </app-list-item-section>
+
+    @if (isDocsActive()) {
+      <app-list-item-section [side]="true">
+        <i class="fas fa-check text-sm"></i>
+      </app-list-item-section>
+    }
+  </app-list-item>
+
+  <!-- Bouton Ajouter un Chat -->
+  <app-list-item
+    [active]="isNewChatActive()"
+    (activate)="onNewChatClick()"
+  >
+    <app-list-item-section [avatar]="true">
+      <i class="fas fa-plus text-lg text-blue-600"></i>
+    </app-list-item-section>
+
+    <app-list-item-section>
+      <app-list-item-label>Nouveau Chat</app-list-item-label>
+      <app-list-item-label [caption]="true">Démarrer une nouvelle conversation</app-list-item-label>
+    </app-list-item-section>
+
+    @if (isNewChatActive()) {
+      <app-list-item-section [side]="true">
+        <i class="fas fa-check text-sm"></i>
+      </app-list-item-section>
+    }
   </app-list-item>
 
   <!-- Expansion Item: Modes de Chat -->
@@ -46,7 +72,7 @@
     hostClass="mt-2"
   >
     <!-- Menu déroulant des modes de chat -->
-    <app-list variant="navigation" hostClass="mt-1 ml-6">
+    <app-list hostClass="mt-1 ml-6">
       @for (mode of chatModes(); track mode.id) {
         <app-list-item
           variant="navigation-mode"

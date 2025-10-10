@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ListComponent } from '../../../components/list/list.component';
 import { ListItemComponent } from '../../../components/list-item/list-item.component';
@@ -30,11 +30,18 @@ export interface ChatMode {
 })
 export class MainSidebarNavigationComponent {
   currentChatMode = input<string | null>(null);
+  currentRoute = input<string>('');
   chatModes = input<ChatMode[]>([]);
   chatModesExpanded = input<boolean>(true);
 
+  // Computed pour déterminer quel menu est actif
+  isHomeActive = computed(() => this.currentRoute() === '/' || this.currentRoute() === '');
+  isDocsActive = computed(() => this.currentRoute().startsWith('/docs'));
+  isNewChatActive = computed(() => this.currentRoute() === '/chat/new');
+
   homeClick = output<void>();
   docsClick = output<void>();
+  newChatClick = output<void>();
   chatModeClick = output<ChatMode>();
   toggleChatModes = output<void>();
 
@@ -44,6 +51,10 @@ export class MainSidebarNavigationComponent {
 
   onDocsClick() {
     this.docsClick.emit();
+  }
+
+  onNewChatClick() {
+    this.newChatClick.emit();
   }
 
   onChatModeClick(mode: ChatMode) {
