@@ -1,0 +1,75 @@
+<app-list variant="navigation">
+  <!-- Bouton Accueil - Quasar-like Structure -->
+  <app-list-item
+    variant="navigation"
+    [active]="!currentChatMode()"
+    (activate)="onHomeClick()"
+  >
+    <app-list-item-section [avatar]="true">
+      <i class="fas fa-home text-lg"></i>
+    </app-list-item-section>
+
+    <app-list-item-section>
+      <app-list-item-label>Accueil</app-list-item-label>
+      <app-list-item-label [caption]="true">Retour à l'accueil</app-list-item-label>
+    </app-list-item-section>
+
+    @if (!currentChatMode()) {
+      <app-list-item-section [side]="true">
+        <i class="fas fa-check text-sm"></i>
+      </app-list-item-section>
+    }
+  </app-list-item>
+
+  <!-- Bouton Documentation -->
+  <app-list-item
+    variant="navigation"
+    [active]="false"
+    (activate)="onDocsClick()"
+  >
+    <app-list-item-section [avatar]="true">
+      <i class="fas fa-book text-lg"></i>
+    </app-list-item-section>
+
+    <app-list-item-section>
+      <app-list-item-label>Docs</app-list-item-label>
+      <app-list-item-label [caption]="true">Documentation des composants</app-list-item-label>
+    </app-list-item-section>
+  </app-list-item>
+
+  <!-- Expansion Item: Modes de Chat -->
+  <app-expansion-item
+    label="Modes de Chat"
+    icon="fas fa-layer-group"
+    [modelValue]="chatModesExpanded()"
+    (update)="onToggleChatModes()"
+    hostClass="mt-2"
+  >
+    <!-- Menu déroulant des modes de chat -->
+    <app-list variant="navigation" hostClass="mt-1 ml-6">
+      @for (mode of chatModes(); track mode.id) {
+        <app-list-item
+          variant="navigation-mode"
+          size="sm"
+          [active]="currentChatMode() === mode.id"
+          (activate)="onChatModeClick(mode)"
+        >
+          <app-list-item-section [avatar]="true">
+            <i [class]="'fas ' + mode.icon + ' text-sm'"></i>
+          </app-list-item-section>
+
+          <app-list-item-section>
+            <app-list-item-label>{{ mode.label }}</app-list-item-label>
+            <app-list-item-label [caption]="true">{{ mode.description }}</app-list-item-label>
+          </app-list-item-section>
+
+          @if (currentChatMode() === mode.id) {
+            <app-list-item-section [side]="true">
+              <i class="fas fa-check text-xs"></i>
+            </app-list-item-section>
+          }
+        </app-list-item>
+      }
+    </app-list>
+  </app-expansion-item>
+</app-list>

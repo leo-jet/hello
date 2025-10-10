@@ -1,0 +1,329 @@
+<div class="w-full max-w-7xl mx-auto px-4 py-8">
+  <!-- En-tête -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-3">InputField Component</h1>
+    <p class="text-base text-gray-600 leading-relaxed">
+      Composant <code class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-mono text-sm">app-input-field</code>
+      — champ de saisie polyvalent avec support texte, textarea auto-resize, file picker, et slots prepend/append.
+    </p>
+  </div>
+
+  <!-- Navigation par onglets -->
+  <div class="mb-8">
+    <div class="flex items-center gap-2 bg-gray-100 p-1 rounded-lg w-fit">
+      <button
+        type="button"
+        (click)="setActiveTab('use-cases')"
+        [class]="activeTab() === 'use-cases'
+          ? 'bg-white text-gray-900 shadow-sm px-4 py-2.5 rounded-md font-semibold text-sm transition-all duration-200'
+          : 'text-gray-600 hover:text-gray-900 px-4 py-2.5 rounded-md font-medium text-sm transition-all duration-200 hover:bg-white/50'"
+      >
+        Use-cases
+      </button>
+      <button
+        type="button"
+        (click)="setActiveTab('api')"
+        [class]="activeTab() === 'api'
+          ? 'bg-white text-gray-900 shadow-sm px-4 py-2.5 rounded-md font-semibold text-sm transition-all duration-200'
+          : 'text-gray-600 hover:text-gray-900 px-4 py-2.5 rounded-md font-medium text-sm transition-all duration-200 hover:bg-white/50'"
+      >
+        API rapide
+      </button>
+      <button
+        type="button"
+        (click)="setActiveTab('behavior')"
+        [class]="activeTab() === 'behavior'
+          ? 'bg-white text-gray-900 shadow-sm px-4 py-2.5 rounded-md font-semibold text-sm transition-all duration-200'
+          : 'text-gray-600 hover:text-gray-900 px-4 py-2.5 rounded-md font-medium text-sm transition-all duration-200 hover:bg-white/50'"
+      >
+        Comportement
+      </button>
+    </div>
+  </div>
+
+  <!-- Tab Content: Use-cases -->
+  @if (activeTab() === 'use-cases') {
+  <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+    <ul class="space-y-3">
+      <li class="flex items-start">
+        <span class="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-blue-600 mt-2 mr-3"></span>
+        <span class="text-gray-700 leading-relaxed">Formulaires avec champs de saisie texte simples ou multi-lignes.</span>
+      </li>
+      <li class="flex items-start">
+        <span class="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-blue-600 mt-2 mr-3"></span>
+        <span class="text-gray-700 leading-relaxed">Upload de fichiers avec interface personnalisée et accessible.</span>
+      </li>
+      <li class="flex items-start">
+        <span class="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-blue-600 mt-2 mr-3"></span>
+        <span class="text-gray-700 leading-relaxed">Champs de recherche avec icônes et boutons intégrés via slots.</span>
+      </li>
+      <li class="flex items-start">
+        <span class="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-blue-600 mt-2 mr-3"></span>
+        <span class="text-gray-700 leading-relaxed">Textarea avec redimensionnement automatique pour commentaires et descriptions.</span>
+      </li>
+      <li class="flex items-start">
+        <span class="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-blue-600 mt-2 mr-3"></span>
+        <span class="text-gray-700 leading-relaxed">États disabled pour désactiver temporairement les champs.</span>
+      </li>
+    </ul>
+  </div>
+  }
+
+  <!-- Tab Content: API rapide -->
+  @if (activeTab() === 'api') {
+  <div class="space-y-6">
+    <!-- Inputs Card -->
+    <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+      <h3 class="text-lg font-bold text-gray-900 mb-4 pb-3 border-b border-gray-200">Inputs</h3>
+      <div class="space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-start gap-2">
+          <code class="bg-blue-50 text-blue-700 px-2 py-1 rounded font-mono text-sm font-semibold whitespace-nowrap">placeholder</code>
+          <div class="flex-1">
+            <p class="text-sm text-gray-600"><code class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-xs">string</code> — Texte d'aide affiché dans le contrôle.</p>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-start gap-2">
+          <code class="bg-blue-50 text-blue-700 px-2 py-1 rounded font-mono text-sm font-semibold whitespace-nowrap">type</code>
+          <div class="flex-1">
+            <p class="text-sm text-gray-600"><code class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-xs">'text' | 'file'</code> — Détermine le rendu : champ texte/textarea (défaut) ou file picker. Par défaut : <code class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-xs">'text'</code>.</p>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-start gap-2">
+          <code class="bg-blue-50 text-blue-700 px-2 py-1 rounded font-mono text-sm font-semibold whitespace-nowrap">disabled</code>
+          <div class="flex-1">
+            <p class="text-sm text-gray-600"><code class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-xs">boolean</code> — Désactive les interactions. Par défaut : <code class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-xs">false</code>.</p>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-start gap-2">
+          <code class="bg-blue-50 text-blue-700 px-2 py-1 rounded font-mono text-sm font-semibold whitespace-nowrap">hostClass</code>
+          <div class="flex-1">
+            <p class="text-sm text-gray-600"><code class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-xs">string</code> — Classe(s) CSS ajoutée(s) sur l'élément hôte.</p>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-start gap-2">
+          <code class="bg-blue-50 text-blue-700 px-2 py-1 rounded font-mono text-sm font-semibold whitespace-nowrap">inputClass</code>
+          <div class="flex-1">
+            <p class="text-sm text-gray-600"><code class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-xs">string</code> — Classe(s) CSS appliquée(s) à l'élément input/textarea visible.</p>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-start gap-2">
+          <code class="bg-blue-50 text-blue-700 px-2 py-1 rounded font-mono text-sm font-semibold whitespace-nowrap">id</code>
+          <div class="flex-1">
+            <p class="text-sm text-gray-600"><code class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-xs">string</code> — Identifiant HTML pour labels externes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Outputs Card -->
+    <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+      <h3 class="text-lg font-bold text-gray-900 mb-4 pb-3 border-b border-gray-200">Outputs</h3>
+      <div class="space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-start gap-2">
+          <code class="bg-blue-50 text-blue-700 px-2 py-1 rounded font-mono text-sm font-semibold whitespace-nowrap">valueChange</code>
+          <div class="flex-1">
+            <p class="text-sm text-gray-600"><code class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-xs">EventEmitter&lt;string | FileList | File | null&gt;</code> — Émis quand la valeur change. Pour texte/textarea : string ; pour fichiers : File (unique) ou FileList (multiple) ; null si vidé.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Methods Card -->
+    <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+      <h3 class="text-lg font-bold text-gray-900 mb-4 pb-3 border-b border-gray-200">Méthodes publiques</h3>
+      <div class="space-y-3">
+        <div>
+          <code class="bg-blue-50 text-blue-700 px-2 py-1 rounded font-mono text-sm font-semibold">clear()</code>
+          <p class="text-sm text-gray-600 mt-1">Efface la valeur texte ou fichier et émet <code class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-xs">null</code>.</p>
+        </div>
+        <div>
+          <code class="bg-blue-50 text-blue-700 px-2 py-1 rounded font-mono text-sm font-semibold">clearFile()</code>
+          <p class="text-sm text-gray-600 mt-1">Réinitialise la sélection de fichier et émet <code class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-xs">null</code>.</p>
+        </div>
+        <div>
+          <code class="bg-blue-50 text-blue-700 px-2 py-1 rounded font-mono text-sm font-semibold">openFilePicker()</code>
+          <p class="text-sm text-gray-600 mt-1">Ouvre le dialogue de sélection de fichier (ignoré si disabled).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Tab Content: Comportement -->
+  @if (activeTab() === 'behavior') {
+  <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+    <div class="space-y-4">
+      <div class="pb-4 border-b border-gray-100">
+        <h4 class="font-semibold text-gray-900 mb-2">Textarea auto-resize</h4>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          Pour le rendu multi-lignes, le composant utilise un <code class="bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded font-mono text-xs">textarea</code>
+          avec redimensionnement automatique limité à 200px de hauteur.
+        </p>
+      </div>
+
+      <div class="pb-4 border-b border-gray-100">
+        <h4 class="font-semibold text-gray-900 mb-2">File picker accessible</h4>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          Le contrôle fichier masque l'input natif (classe <code class="bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded font-mono text-xs">sr-only</code>)
+          et expose une zone visible accessible par clavier (Enter/Space) et clic.
+        </p>
+      </div>
+
+      <div class="pb-4 border-b border-gray-100">
+        <h4 class="font-semibold text-gray-900 mb-2">Slots prepend & append</h4>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          Les slots <code class="bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded font-mono text-xs">prepend</code>
+          et <code class="bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded font-mono text-xs">append</code>
+          permettent de projeter des boutons/icônes avant ou après l'élément input visible.
+        </p>
+      </div>
+
+      <div class="pb-4 border-b border-gray-100">
+        <h4 class="font-semibold text-gray-900 mb-2">État disabled</h4>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          Désactiver le contrôle empêche toute interaction, y compris l'ouverture du file picker et la saisie de texte.
+        </p>
+      </div>
+
+      <div>
+        <h4 class="font-semibold text-gray-900 mb-2">Types émis par valueChange</h4>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          Le composant émet <code class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-xs">string</code> pour text/textarea,
+          <code class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-xs">File</code> ou
+          <code class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-xs">FileList</code> pour les fichiers,
+          et <code class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-xs">null</code> quand vidé.
+        </p>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Examples Section -->
+  <div class="mt-8">
+    <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b-2 border-blue-500">Exemples d'utilisation</h2>
+
+    <div class="space-y-6">
+      <!-- Example 1: Basic Text -->
+      <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+          <span class="bg-blue-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-2">1</span>
+          Champ texte basique
+        </h3>
+        <div class="space-y-3">
+          <p class="text-sm text-gray-600">Un simple champ de saisie avec placeholder :</p>
+          <app-input-field placeholder="Entrez votre nom" (valueChange)="onTextChange($event)"></app-input-field>
+          <div class="text-sm text-gray-700 bg-gray-50 rounded p-3">
+            <span class="font-medium">Résultat :</span> {{ textValue() || '—' }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Example 2: Textarea -->
+      <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+          <span class="bg-blue-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-2">2</span>
+          Textarea auto-resize
+        </h3>
+        <div class="space-y-3">
+          <p class="text-sm text-gray-600">Zone de texte multi-lignes avec redimensionnement automatique :</p>
+          <app-input-field placeholder="Saisissez plusieurs lignes..." (valueChange)="onTextareaChange($event)"></app-input-field>
+          <div class="text-sm text-gray-700 bg-gray-50 rounded p-3">
+            <span class="font-medium">Résultat :</span>
+            <pre class="mt-2 text-xs whitespace-pre-wrap">{{ textareaValue() || '—' }}</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Example 3: File Picker -->
+      <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+          <span class="bg-blue-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-2">3</span>
+          File picker
+        </h3>
+        <div class="space-y-3">
+          <p class="text-sm text-gray-600">Sélecteur de fichiers avec interface personnalisée :</p>
+          <app-input-field [type]="'file'" placeholder="Choisir un fichier" (valueChange)="onFileChange($event)"></app-input-field>
+          <div class="text-sm text-gray-700 bg-gray-50 rounded p-3">
+            <span class="font-medium">Résultat :</span> {{ formatFile(fileValue()) }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Example 4: With Slots -->
+      <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+          <span class="bg-blue-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-2">4</span>
+          Avec slots prepend/append
+        </h3>
+        <div class="space-y-3">
+          <p class="text-sm text-gray-600">Champ avec icône et bouton intégrés :</p>
+          <div class="flex items-center gap-2">
+            <app-input-field placeholder="Rechercher..." (valueChange)="onSearchChange($event)">
+              <button prepend class="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded-l transition-colors">🔍</button>
+              <button append class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-r transition-colors">Go</button>
+            </app-input-field>
+          </div>
+          <div class="text-sm text-gray-700 bg-gray-50 rounded p-3">
+            <span class="font-medium">Résultat :</span> {{ searchValue() || '—' }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Example 5: Disabled -->
+      <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+          <span class="bg-blue-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-2">5</span>
+          État désactivé
+        </h3>
+        <div class="space-y-3">
+          <p class="text-sm text-gray-600">Champ désactivé qui empêche toute interaction :</p>
+          <app-input-field placeholder="Champ désactivé" [disabled]="true"></app-input-field>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notes Section -->
+  <div class="mt-8 bg-blue-50 rounded-lg p-6 border border-blue-100">
+    <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+      <svg class="w-5 h-5 text-blue-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+      </svg>
+      Notes importantes
+    </h2>
+    <div class="space-y-3">
+      <div class="flex">
+        <div class="flex-shrink-0 w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-3"></div>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          Le composant gère automatiquement le type de rendu (input, textarea, ou file picker) selon vos besoins.
+        </p>
+      </div>
+
+      <div class="flex">
+        <div class="flex-shrink-0 w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-3"></div>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          Les slots prepend et append sont optionnels et permettent une grande flexibilité de personnalisation.
+        </p>
+      </div>
+
+      <div class="flex">
+        <div class="flex-shrink-0 w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-3"></div>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          Le textarea s'ajuste automatiquement jusqu'à une hauteur maximale de 200px pour éviter un débordement excessif.
+        </p>
+      </div>
+
+      <div class="flex">
+        <div class="flex-shrink-0 w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-3"></div>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          Le file picker est entièrement accessible au clavier avec les touches Enter et Space.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

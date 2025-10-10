@@ -2,7 +2,7 @@
   type="button"
   [attr.aria-label]="ariaLabel"
   [disabled]="disabled"
-  (click)="onClick()"
+  (click)="onClick($event)"
   [class]="buttonClasses"
   [class.opacity-50]="disabled"
   [class.cursor-not-allowed]="disabled"

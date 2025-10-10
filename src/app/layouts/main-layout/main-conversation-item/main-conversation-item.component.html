@@ -1,0 +1,21 @@
+<app-list-item
+  [clickable]="true"
+  hostClass="bg-white hover:bg-gray-50 group rounded-lg"
+  (activate)="onConversationClick()"
+>  <!-- Main Section -->
+  <app-list-item-section>
+    <app-list-item-label [header]="true" hostClass="truncate">
+      {{ conversation().title }}
+    </app-list-item-label>
+  </app-list-item-section>
+
+  <!-- Side Section: Delete Button -->
+  <app-list-item-section [side]="true" [top]="true">
+    <app-icon-button
+      iconClass="fas fa-trash"
+      ariaLabel="Supprimer la conversation"
+      buttonClass="hover:bg-red-100 text-red-500 w-8 h-8"
+      (pressed)="onDeleteClick()"
+    />
+  </app-list-item-section>
+</app-list-item>

@@ -1,0 +1,155 @@
+<div class="w-full max-w-7xl mx-auto px-6 py-8">
+  <!-- En-tête -->
+  <header class="mb-10">
+    <div class="flex items-center mb-4">
+      <span class="text-4xl mr-3">📚</span>
+      <h1 class="text-4xl font-bold text-gray-900">
+        Documentation Template Widget
+      </h1>
+    </div>
+    <p class="text-lg text-gray-600 leading-relaxed">
+      Documentation interactive avec exemples d'utilisation et guides complets
+    </p>
+  </header>
+
+  <!-- Navigation par catégorie -->
+  <nav class="space-y-10">
+    <!-- Composants -->
+    <section>
+      <div class="flex items-center mb-6">
+        <span class="text-2xl mr-3">🧩</span>
+        <h2 class="text-2xl font-bold text-gray-800">
+          Composants
+        </h2>
+        <span class="ml-3 px-3 py-1 bg-blue-100 text-blue-800 text-sm font-semibold rounded-full">
+          {{ componentsCount() }}
+        </span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (component of docsConfig.components; track component.name) {
+          <div class="bg-white border border-gray-200 rounded-xl p-6 hover:border-blue-400 hover:shadow-lg transition-all duration-200 group">
+            <div class="flex items-start justify-between mb-3">
+              <h3 class="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                {{ component.name }}
+              </h3>
+              <span
+                [class]="getStatusClass(component.status)"
+                class="px-2.5 py-1 text-xs font-medium rounded-full">
+                {{ getStatusLabel(component.status) }}
+              </span>
+            </div>
+            <p class="text-sm text-gray-600 leading-relaxed mb-4 min-h-[3rem]">
+              {{ component.description }}
+            </p>
+
+            <div class="flex gap-2">
+              <button
+                (click)="navigateToDocumentation(component.path)"
+                class="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
+                <span>📖</span>
+                <span>Documentation</span>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Services -->
+    @if (docsConfig.services.length > 0) {
+      <section>
+        <div class="flex items-center mb-6">
+          <span class="text-2xl mr-3">⚙️</span>
+          <h2 class="text-2xl font-bold text-gray-800">
+            Services
+          </h2>
+          <span class="ml-3 px-3 py-1 bg-purple-100 text-purple-800 text-sm font-semibold rounded-full">
+            {{ servicesCount() }}
+          </span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (service of docsConfig.services; track service.name) {
+            <div class="bg-white border border-gray-200 rounded-xl p-6 hover:border-purple-400 hover:shadow-lg transition-all duration-200 group">
+              <div class="flex items-start justify-between mb-3">
+                <h3 class="text-lg font-semibold text-gray-900 group-hover:text-purple-600 transition-colors">
+                  {{ service.name }}
+                </h3>
+                <span
+                  [class]="getStatusClass(service.status)"
+                  class="px-2.5 py-1 text-xs font-medium rounded-full">
+                  {{ getStatusLabel(service.status) }}
+                </span>
+              </div>
+              <p class="text-sm text-gray-600 leading-relaxed mb-4 min-h-[3rem]">
+                {{ service.description }}
+              </p>
+              <button
+                (click)="openDocumentation(service.path)"
+                class="w-full px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
+                <span>📖</span>
+                <span>Documentation</span>
+              </button>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- Guides -->
+    @if (docsConfig.guides.length > 0) {
+      <section>
+        <div class="flex items-center mb-6">
+          <span class="text-2xl mr-3">📋</span>
+          <h2 class="text-2xl font-bold text-gray-800">
+            Guides
+          </h2>
+          <span class="ml-3 px-3 py-1 bg-amber-100 text-amber-800 text-sm font-semibold rounded-full">
+            {{ guidesCount() }}
+          </span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (guide of docsConfig.guides; track guide.name) {
+            <div class="bg-white border border-gray-200 rounded-xl p-6 hover:border-amber-400 hover:shadow-lg transition-all duration-200 group">
+              <h3 class="text-lg font-semibold text-gray-900 group-hover:text-amber-600 transition-colors mb-3">
+                {{ guide.name }}
+              </h3>
+              <p class="text-sm text-gray-600 leading-relaxed mb-4 min-h-[3rem]">
+                {{ guide.description }}
+              </p>
+              <button
+                (click)="openGuide(guide.path)"
+                class="w-full px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
+                <span>📖</span>
+                <span>Lire le guide</span>
+              </button>
+            </div>
+          }
+        </div>
+      </section>
+    }
+  </nav>
+
+  <!-- Section aide -->
+  <footer class="mt-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 border border-gray-200">
+    <div class="flex items-start gap-4">
+      <span class="text-3xl">🆘</span>
+      <div class="flex-1">
+        <h3 class="text-xl font-bold text-gray-900 mb-2">Besoin d'aide ?</h3>
+        <p class="text-sm text-gray-600 leading-relaxed mb-4">
+          Cette documentation est en constante évolution. N'hésitez pas à contribuer pour l'améliorer !
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <button class="px-4 py-2 bg-white border border-gray-300 hover:border-blue-500 hover:bg-blue-50 text-gray-700 hover:text-blue-700 text-sm font-medium rounded-lg transition-all duration-200">
+            Signaler un problème
+          </button>
+          <button class="px-4 py-2 bg-white border border-gray-300 hover:border-blue-500 hover:bg-blue-50 text-gray-700 hover:text-blue-700 text-sm font-medium rounded-lg transition-all duration-200">
+            Suggérer une amélioration
+          </button>
+          <button class="px-4 py-2 bg-white border border-gray-300 hover:border-blue-500 hover:bg-blue-50 text-gray-700 hover:text-blue-700 text-sm font-medium rounded-lg transition-all duration-200">
+            Contribuer
+          </button>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>

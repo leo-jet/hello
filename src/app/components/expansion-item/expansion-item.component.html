@@ -1,0 +1,41 @@
+<div [class]="hostClass()">
+  <!-- Header -->
+  <div
+    [class]="headerClasses()"
+    (click)="toggleExpansion()"
+    role="button"
+    [attr.aria-expanded]="expanded()"
+  >
+    <!-- Expand Icon (Left Position) -->
+    @if (expandIconPosition() === 'left') {
+      <i [class]="expandIconClasses()" class="mr-3"></i>
+    }
+
+    <!-- Icon Section -->
+    @if (icon()) {
+      <i [class]="icon()" class="w-5 mr-3" aria-hidden="true"></i>
+    }
+
+    <!-- Label Section -->
+    <div class="flex-1 text-left">
+      @if (label()) {
+        <div class="text-sm font-medium text-gray-700">{{ label() }}</div>
+      }
+      @if (caption()) {
+        <div class="text-xs text-gray-500">{{ caption() }}</div>
+      }
+    </div>
+
+    <!-- Expand Icon (Right Position - Default) -->
+    @if (expandIconPosition() === 'right') {
+      <i [class]="expandIconClasses()" class="ml-2"></i>
+    }
+  </div>
+
+  <!-- Expandable Content -->
+  @if (expanded()) {
+    <div class="overflow-hidden">
+      <ng-content></ng-content>
+    </div>
+  }
+</div>

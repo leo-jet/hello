@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { DOCS_ROUTES } from '../../docs/docs.config';
 
 export const routes: Routes = [
   {
@@ -42,5 +43,6 @@ export const routes: Routes = [
   {
     path: 'ngrx-example',
     loadComponent: () => import('./components/ngrx-example/ngrx-example.component').then(m => m.NgRxExampleComponent)
-  }
+  },
+  ...DOCS_ROUTES
 ];

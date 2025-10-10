@@ -1,15 +1,13 @@
 <!-- Header -->
-<header class="h-16 bg-white border-b border-gray-200 shadow-sm z-30 flex-shrink-0">
+<header class="h-16 bg-white border-b shadow-sm flex-shrink-0">
   <div class="h-full px-4 flex items-center justify-between">
     <!-- Section gauche avec toggle et titre -->
     <div class="flex items-center space-x-4">
       <button 
         *ngIf="showToggleButton"
         (click)="onToggle()"
-        class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 text-gray-600">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
+        class="md:hidden p-2 rounded hover:bg-gray-100 hover:scale-105 transition-all text-gray-600">
+        <i class="fas fa-bars text-xl" aria-hidden="true"></i>
       </button>
       <h1 *ngIf="title" class="text-xl font-semibold text-gray-900 md:hidden">{{ title }}</h1>
       <ng-content select="[slot=left]"></ng-content>
@@ -28,13 +26,10 @@
       <div class="flex items-center space-x-2">
         <button 
           *ngIf="showNotificationButton"
-          class="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 text-gray-600 relative">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5z"></path>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path>
-          </svg>
+          class="p-2 rounded hover:bg-gray-100 transition-colors text-gray-600 relative">
+          <i class="fas fa-bell text-lg" aria-hidden="true"></i>
           <span *ngIf="notificationCount > 0" 
-            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
             {{ notificationCount }}
           </span>
         </button>

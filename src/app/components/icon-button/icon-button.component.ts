@@ -20,8 +20,9 @@ export class IconButtonComponent {
 
   @Output() pressed = new EventEmitter<void>();
 
-  onClick() {
+  onClick(event: MouseEvent) {
     if (this.disabled) return;
+    event.stopPropagation(); // Prevent parent click events
     this.pressed.emit();
   }
 

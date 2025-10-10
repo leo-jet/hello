@@ -1,8 +1,10 @@
-<div class="inline-block">
+<div class="inline-block" [attr.data-select-id]="instanceId">
   <div>
     <button
       #button
       type="button"
+      [attr.id]="instanceId + '-button'"
+      [attr.aria-controls]="instanceId + '-menu'"
       (click)="toggle(); $event.stopPropagation()"
       (keydown)="$event.key === 'Escape' && close()"
       [class]="
@@ -12,27 +14,27 @@
       aria-haspopup="listbox"
       [attr.aria-expanded]="open()"
     >
-      @if (selectedIcon()) {
+      @if (selectedImage()) {
+        <img
+          [src]="selectedImage()"
+          class="w-5 h-5 rounded-full flex-shrink-0"
+          alt=""
+        />
+      } @else if (!selectedImage() && selectedIcon()) {
         <span class="text-base">{{ selectedIcon() }}</span>
       }
       <span class="flex-1 text-left">{{
         selectedLabel() || placeholder
       }}</span>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="ml-2">
-        <path
-          d="M7 10l5 5 5-5"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
+      <i class="fas fa-chevron-down ml-2 text-sm"></i>
     </button>
 
     @if (open()) {
     <ul
       #menu
+      [attr.id]="instanceId + '-menu'"
       role="listbox"
+      [attr.aria-labelledby]="instanceId + '-button'"
       (click)="$event.stopPropagation()"
       [ngStyle]="menuStyles"
       [class]="'fixed bg-white rounded-md shadow-lg py-1 ' + (menuClass || '')"

@@ -3,16 +3,17 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { ChatModeService } from '../../services/chat-mode.service';
 
-// Import des nouveaux composants
+// Import des composants réutilisables
 import { SidebarComponent } from '../../components/sidebar/sidebar/sidebar.component';
 import { HeaderComponent } from '../../components/header/header.component';
 import { FooterComponent } from '../../components/footer/footer.component';
-import { SidebarNavComponent } from '../../components/sidebar/sidebar-nav/sidebar-nav.component';
-import { SidebarLinkComponent } from '../../components/sidebar/sidebar-link/sidebar-link.component';
 import { OverlayComponent } from '../../components/overlay/overlay.component';
-import { InputFieldComponent } from '../../components/input-field/input-field.component';
-import { IconButtonComponent } from '../../components/icon-button/icon-button.component';
-import { SelectComponent } from '../../components/select/select.component';
+import { ListComponent } from '../../components/list/list.component';
+
+// Import des sous-composants du main-layout
+import { MainSidebarNavigationComponent } from './main-sidebar-navigation/main-sidebar-navigation.component';
+import { MainConversationItemComponent } from './main-conversation-item/main-conversation-item.component';
+import { MainChatInputComponent } from './main-chat-input/main-chat-input.component';
 
 // Interface pour les modèles AI
 interface AIModel {
@@ -33,9 +34,10 @@ interface AIModel {
     HeaderComponent,
     FooterComponent,
     OverlayComponent,
-    InputFieldComponent,
-    IconButtonComponent,
-    SelectComponent
+    ListComponent,
+    MainSidebarNavigationComponent,
+    MainConversationItemComponent,
+    MainChatInputComponent
   ],
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.css'],
@@ -281,11 +283,24 @@ export class MainLayoutComponent implements AfterContentInit {
     }
   ];
 
+  opts = [
+    { id: 1, name: 'Option A', meta: 'A' },
+    { id: 2, name: 'Option B', meta: 'B' }
+  ];
+
+  selectedObject = signal<any | null>(null);
+
   @ContentChild('[footer]') footerContent?: TemplateRef<any>;
 
   ngAfterContentInit() {
     this.hasFooterContent.set(!!this.footerContent);
   }
+
+
+  onSelectObject(ev: unknown) {
+    this.selectedObject.set(ev as any);
+  }
+
 
   /**
    * Basculer l'état de la sidebar
@@ -353,6 +368,14 @@ export class MainLayoutComponent implements AfterContentInit {
     event.stopPropagation(); // Empêcher la navigation vers le chat
     this.conversations = this.conversations.filter(conv => conv.id !== chatId);
     console.log('Conversation supprimée:', chatId);
+  }
+
+  /**
+   * Gérer la suppression d'une conversation depuis le composant enfant
+   */
+  handleDeleteConversation(conversation: any) {
+    this.conversations = this.conversations.filter(conv => conv.id !== conversation.id);
+    console.log('Conversation supprimée:', conversation.id);
   }
 
   /**
@@ -506,5 +529,15 @@ export class MainLayoutComponent implements AfterContentInit {
     this.chatModeService.clearMode();
     // Naviguer vers la route
     this.router.navigate(['/']);
+  }
+
+  /**
+   * Naviguer vers la documentation
+   */
+  navigateToDocs(): void {
+    // Fermer la sidebar pour laisser place à la page de docs
+    this.sidebarOpen.set(false);
+    // Naviguer vers /docs
+    this.router.navigate(['/docs']);
   }
 }

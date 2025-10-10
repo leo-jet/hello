@@ -1,0 +1,283 @@
+<div class="max-w-6xl mx-auto p-8">
+  <!-- Header -->
+  <header class="mb-12">
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">DropdownComponent</h1>
+    
+    <nav class="flex gap-6 border-b border-gray-200 pb-4">
+      <button type="button" (click)="scrollTo('basic')" class="text-blue-600 hover:text-blue-800 font-medium">Basic</button>
+      <button type="button" (click)="scrollTo('icons')" class="text-blue-600 hover:text-blue-800 font-medium">Icons</button>
+      <button type="button" (click)="scrollTo('images')" class="text-blue-600 hover:text-blue-800 font-medium">Images</button>
+      <button type="button" (click)="scrollTo('styling')" class="text-blue-600 hover:text-blue-800 font-medium">Styling</button>
+      <button type="button" (click)="scrollTo('advanced')" class="text-blue-600 hover:text-blue-800 font-medium">Advanced</button>
+      <button type="button" (click)="scrollTo('api')" class="text-blue-600 hover:text-blue-800 font-medium">API</button>
+    </nav>
+  </header>
+
+  <!-- Basic Usage -->
+  <section id="basic" class="mb-16">
+    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Basic Usage</h2>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="bg-gray-50 p-6 rounded-lg">
+      <h3 class="text-lg font-medium text-gray-900 mb-4">Standard Dropdown</h3>
+        <div class="flex justify-center py-8">
+          <app-dropdown 
+            [options]="basicOptions"
+            (selection)="onBasicSelection($event)">
+          </app-dropdown>
+        </div>
+        @if (selectedBasic()) {
+          <div class="mt-4 p-2 rounded text-sm text-gray-800">{{ selectedBasic() }}</div>
+        }
+      </div>
+
+      <div class="bg-gray-50 p-6 rounded-lg">
+  <h3 class="text-lg font-medium text-gray-900 mb-4">Large List</h3>
+        <div class="flex justify-center py-8">
+          <app-dropdown 
+            [options]="largeOptions"
+            (selection)="onLargeSelection($event)">
+          </app-dropdown>
+        </div>
+        @if (selectedLarge()) {
+          <div class="mt-4 p-2 rounded text-sm text-gray-800">{{ selectedLarge() }}</div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Icons -->
+  <section id="icons" class="mb-16">
+    <h2 class="text-2xl font-semibold text-gray-900 mb-4">With Icons</h2>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="bg-gray-50 p-6 rounded-lg">
+  <h3 class="text-lg font-medium text-gray-900 mb-4">Emoji Icons</h3>
+        <div class="flex justify-center py-8">
+          <app-dropdown 
+            [options]="iconOptions"
+            (selection)="onIconSelection($event)">
+          </app-dropdown>
+        </div>
+        @if (selectedIcon()) {
+          <div class="mt-4 p-2 rounded text-sm text-gray-800">{{ selectedIcon() }}</div>
+        }
+      </div>
+
+      <div class="bg-gray-50 p-6 rounded-lg">
+  <h3 class="text-lg font-medium text-gray-900 mb-4">Font Awesome Icons</h3>
+        <div class="flex justify-center py-8">
+          <app-dropdown 
+            [options]="faIconOptions"
+            (selection)="onFaIconSelection($event)">
+          </app-dropdown>
+        </div>
+        @if (selectedFaIcon()) {
+          <div class="mt-4 p-2 rounded text-sm text-gray-800">{{ selectedFaIcon() }}</div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Images -->
+  <section id="images" class="mb-16">
+    <h2 class="text-2xl font-semibold text-gray-900 mb-4">With Images</h2>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="bg-gray-50 p-6 rounded-lg">
+  <h3 class="text-lg font-medium text-gray-900 mb-4">Language Selector</h3>
+        <div class="flex justify-center py-8">
+          <app-dropdown 
+            [options]="languageOptions"
+            (selection)="onLanguageSelection($event)">
+          </app-dropdown>
+        </div>
+        @if (selectedLanguage()) {
+          <div class="mt-4 p-2 rounded text-sm text-gray-800">{{ selectedLanguage() }}</div>
+        }
+      </div>
+
+      <div class="bg-gray-50 p-6 rounded-lg">
+  <h3 class="text-lg font-medium text-gray-900 mb-4">User Selector</h3>
+        <div class="flex justify-center py-8">
+          <app-dropdown 
+            [options]="userOptions"
+            (selection)="onUserSelection($event)">
+          </app-dropdown>
+        </div>
+        @if (selectedUser()) {
+          <div class="mt-4 p-2 rounded text-sm text-gray-800">{{ selectedUser() }}</div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Styling -->
+  <section id="styling" class="mb-16">
+    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Custom Styling</h2>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="bg-gray-50 p-6 rounded-lg">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Purple Theme</h3>
+        <div class="flex justify-center py-8">
+          <app-dropdown 
+            [options]="colorOptions"
+            buttonClass="bg-purple-600 hover:bg-purple-700 text-white"
+            menuClass="border-purple-200"
+            itemClass="hover:bg-purple-50 hover:text-purple-800"
+            (selection)="onColorSelection($event)">
+          </app-dropdown>
+        </div>
+        @if (selectedColor()) {
+          <div class="mt-4 p-2 rounded text-sm text-gray-800">{{ selectedColor() }}</div>
+        }
+      </div>
+
+      <div class="bg-gray-50 p-6 rounded-lg">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Rounded Style</h3>
+        <div class="flex justify-center py-8">
+          <app-dropdown 
+            [options]="productOptions"
+            buttonClass="bg-green-600 hover:bg-green-700 text-white rounded-full px-6"
+            menuClass="rounded-2xl shadow-2xl border-0"
+            itemClass="hover:bg-green-50 rounded-lg mx-2 my-1"
+            (selection)="onProductSelection($event)">
+          </app-dropdown>
+        </div>
+        @if (selectedProduct()) {
+          <div class="mt-4 p-2 rounded text-sm text-gray-800">{{ selectedProduct() }}</div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Advanced -->
+  <section id="advanced" class="mb-16">
+    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Advanced Features</h2>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="bg-gray-50 p-6 rounded-lg">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Return Object Mode</h3>
+        <div class="flex justify-center py-8">
+          <app-dropdown 
+            [options]="userOptions"
+            [returnObject]="true"
+            (selection)="onObjectSelection($event)">
+          </app-dropdown>
+        </div>
+        @if (selectedObject()) {
+          <div class="mt-4 p-2 rounded text-sm text-gray-800"><pre class="whitespace-pre-wrap">{{ selectedObject() | json }}</pre></div>
+        }
+      </div>
+
+      <div class="bg-gray-50 p-6 rounded-lg">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Edge Position Test</h3>
+        <div class="relative h-32 py-8">
+          <div class="absolute top-0 right-0">
+            <app-dropdown 
+              [options]="basicOptions"
+              buttonClass="bg-red-600 hover:bg-red-700 text-white">
+            </app-dropdown>
+          </div>
+        </div>
+        <!-- edge position test: positioned at the screen edge to validate collision handling -->
+      </div>
+    </div>
+  </section>
+
+  <!-- API Reference -->
+  <section id="api" class="mb-16">
+  <h2 class="text-2xl font-semibold text-gray-900 mb-8">API Reference</h2>
+    
+    <div class="space-y-8">
+      <div>
+        <h3 class="text-xl font-medium text-gray-900 mb-4">Props</h3>
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white border border-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Default</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><code class="bg-gray-100 px-2 py-1 rounded">options</code></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><code class="bg-gray-100 px-2 py-1 rounded">DropdownOption[]</code></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><code class="bg-gray-100 px-2 py-1 rounded">[]</code></td>
+                <td class="px-6 py-4 text-sm text-gray-500">Array of options to display</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><code class="bg-gray-100 px-2 py-1 rounded">returnObject</code></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><code class="bg-gray-100 px-2 py-1 rounded">boolean</code></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><code class="bg-gray-100 px-2 py-1 rounded">false</code></td>
+                <td class="px-6 py-4 text-sm text-gray-500">Return full option object instead of value</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><code class="bg-gray-100 px-2 py-1 rounded">hostClass</code></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><code class="bg-gray-100 px-2 py-1 rounded">string</code></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><code class="bg-gray-100 px-2 py-1 rounded">''</code></td>
+                <td class="px-6 py-4 text-sm text-gray-500">CSS classes for container</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><code class="bg-gray-100 px-2 py-1 rounded">buttonClass</code></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><code class="bg-gray-100 px-2 py-1 rounded">string</code></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><code class="bg-gray-100 px-2 py-1 rounded">''</code></td>
+                <td class="px-6 py-4 text-sm text-gray-500">Additional CSS classes for button</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><code class="bg-gray-100 px-2 py-1 rounded">menuClass</code></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><code class="bg-gray-100 px-2 py-1 rounded">string</code></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><code class="bg-gray-100 px-2 py-1 rounded">''</code></td>
+                <td class="px-6 py-4 text-sm text-gray-500">Additional CSS classes for menu</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><code class="bg-gray-100 px-2 py-1 rounded">itemClass</code></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><code class="bg-gray-100 px-2 py-1 rounded">string</code></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><code class="bg-gray-100 px-2 py-1 rounded">''</code></td>
+                <td class="px-6 py-4 text-sm text-gray-500">Additional CSS classes for items</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-medium text-gray-900 mb-4">Events</h3>
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white border border-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payload</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><code class="bg-gray-100 px-2 py-1 rounded">selection</code></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><code class="bg-gray-100 px-2 py-1 rounded">unknown | DropdownOption</code></td>
+                <td class="px-6 py-4 text-sm text-gray-500">Emitted when an option is selected</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-medium text-gray-900 mb-4">Types</h3>
+        <div class="bg-gray-50 p-6 rounded-lg">
+          <h4 class="text-lg font-medium text-gray-900 mb-3">DropdownOption</h4>
+          <pre class="bg-gray-900 text-gray-100 p-4 rounded text-sm overflow-x-auto"><code>interface DropdownOption {{ '{' }}
+  value: unknown;
+  label: string;
+  icon?: string;
+  img_path?: string;
+{{ '}' }}</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

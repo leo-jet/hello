@@ -1,0 +1,80 @@
+<div class="p-4 bg-white">
+  <!-- Affichage du mode de chat sélectionné -->
+  @if (currentChatModeInfo()) {
+    <div class="mb-2 flex items-center justify-center">
+      <div class="flex items-center space-x-2 px-3 py-1 bg-gray-50 rounded-full border">
+        <i
+          [class]="'fas ' + currentChatModeInfo()!.icon + ' ' + currentChatModeInfo()!.color"
+          aria-hidden="true"
+        ></i>
+        <span class="text-sm font-medium text-gray-700">
+          {{ currentChatModeInfo()!.label }}
+        </span>
+      </div>
+    </div>
+  }
+
+  <!-- Affichage du modèle sélectionné -->
+  <div class="mb-3 flex items-center justify-center space-x-3">
+    <!-- Sélecteur de modèle -->
+    <app-select
+      [options]="modelSelectOptions()"
+      [defaultValue]="selectedModelId()"
+      [openUpward]="true"
+      placeholder="Choisir un modèle"
+      (selection)="onModelSelect($event)"
+      buttonClass="bg-gray-50 hover:bg-gray-100 border-gray-200 text-sm"
+      menuClass="border-gray-200 min-w-[280px]"
+    />
+
+    <!-- Sélecteur de niveau de raisonnement -->
+    @if (hasReasoning()) {
+      <app-select
+        [options]="reasoningLevelSelectOptions()"
+        [defaultValue]="selectedReasoningLevel()"
+        (selection)="onReasoningLevelSelect($event)"
+      />
+    }
+  </div>
+
+  <!-- Champ de saisie -->
+  <div class="flex justify-center">
+    <div class="w-full md:w-[70%]">
+      <app-input-field
+        type="text"
+        placeholder="Tapez votre message..."
+        inputClass="w-full px-4 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+        (valueChange)="onInputChange($event)"
+      >
+        <!-- Prepend: Icon button à gauche -->
+        <app-icon-button
+          prepend
+          iconClass="fas fa-paperclip"
+          ariaLabel="Joindre un fichier"
+          buttonClass="p-2 text-gray-400 hover:text-gray-600 transition-colors bg-transparent"
+          (pressed)="onAttachClick()"
+        />
+
+        <!-- Append: Boutons microphone et envoi -->
+        <div append class="flex items-center space-x-2">
+          <!-- Bouton microphone -->
+          <app-icon-button
+            iconClass="fas fa-microphone"
+            ariaLabel="Enregistrement vocal"
+            buttonClass="p-2 text-gray-400 hover:text-blue-500 transition-colors bg-transparent"
+            (pressed)="onMicrophoneClick()"
+          />
+
+          <!-- Bouton envoi -->
+          <app-icon-button
+            iconClass="fas fa-paper-plane"
+            ariaLabel="Envoyer le message"
+            buttonClass="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+            [disabled]="isSendButtonDisabled()"
+            (pressed)="onSendMessage()"
+          />
+        </div>
+      </app-input-field>
+    </div>
+  </div>
+</div>

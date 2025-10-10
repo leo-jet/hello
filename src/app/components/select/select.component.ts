@@ -9,6 +9,9 @@ import {
   ViewChild,
   ElementRef,
   inject,
+  HostListener,
+  ChangeDetectorRef,
+  OnInit,
   OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -19,9 +22,15 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   templateUrl: './select.component.html',
   styleUrls: ['./select.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SelectComponent implements OnDestroy {
+export class SelectComponent implements OnInit, OnDestroy {
+  // Identifiant unique pour chaque instance
+  private static instanceCounter = 0;
+  readonly instanceId = `select-${++SelectComponent.instanceCounter}`;
+
+  // Registre statique de toutes les instances actives
+  private static activeInstances = new Set<SelectComponent>();
+
   @Input() options: any[] = [];
   @Input() valueField = 'value';
   @Input() labelField = 'label';
@@ -33,6 +42,7 @@ export class SelectComponent implements OnDestroy {
   @Input() returnObject = false;
   @Input() placeholder = 'Select';
   @Input() openUpward = false;
+  @Input() defaultValue: unknown = null;
 
   @Input() set value(val: unknown) {
     this.selectedValue.set(val);
@@ -44,10 +54,10 @@ export class SelectComponent implements OnDestroy {
   selectedValue = signal<unknown | null>(null);
 
   @ViewChild('button', { static: true }) button!: ElementRef<HTMLButtonElement>;
-  @ViewChild('menu') menu!: ElementRef<HTMLUListElement>;
+  @ViewChild('menu', { static: false }) menu?: ElementRef<HTMLUListElement>;
 
   private host = inject(ElementRef);
-  private documentClickHandler = this.handleDocumentClick.bind(this);
+  private cdr = inject(ChangeDetectorRef);
   menuStyles: { [k: string]: any } = {};
 
   selectedLabel = computed(() => {
@@ -60,6 +70,12 @@ export class SelectComponent implements OnDestroy {
     const val = this.selectedValue();
     const found = this.normalizedOptions?.find((o) => this.getValue(o) === val);
     return found ? this.getIcon(found) : null;
+  });
+
+  selectedImage = computed(() => {
+    const val = this.selectedValue();
+    const found = this.normalizedOptions?.find((o) => this.getValue(o) === val);
+    return found ? this.getImage(found) : null;
   });
 
   get normalizedOptions(): any[] {
@@ -75,7 +91,37 @@ export class SelectComponent implements OnDestroy {
   }
 
   constructor() {
-    this.setupDocumentClickListener();
+    console.log(`[Select:${this.instanceId}] constructor called`);
+    // Enregistrer cette instance
+    SelectComponent.activeInstances.add(this);
+  }
+
+  ngOnInit() {
+    // Appliquer la valeur par défaut si elle existe et qu'aucune valeur n'est déjà définie
+    if (this.defaultValue !== null && this.selectedValue() === null) {
+      this.selectedValue.set(this.defaultValue);
+    }
+  }
+
+  ngOnDestroy() {
+    // Retirer cette instance du registre
+    SelectComponent.activeInstances.delete(this);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.open()) return;
+
+    const target = event.target as Element;
+    const hostElement = this.host.nativeElement;
+    const menuElement = this.menu?.nativeElement;
+
+    const isInsideHost = hostElement && hostElement.contains(target);
+    const isInsideMenu = menuElement && menuElement.contains(target);
+
+    if (!isInsideHost && !isInsideMenu) {
+      this.close();
+    }
   }
 
   getValue(item: any): unknown {
@@ -109,30 +155,6 @@ export class SelectComponent implements OnDestroy {
     }, obj);
   }
 
-  private setupDocumentClickListener() {
-    // Utiliser setTimeout pour éviter que l'event listener soit ajouté immédiatement
-    setTimeout(() => {
-      document.addEventListener('click', this.documentClickHandler);
-    }, 0);
-  }
-
-  private handleDocumentClick(event: Event) {
-    if (!this.open()) return;
-
-    const target = event.target as Element;
-    const hostElement = this.host.nativeElement;
-    const menuElement = this.menu?.nativeElement;
-
-    // Vérifier si le clic est dans l'élément host ou dans le menu
-    const isInsideHost = hostElement && hostElement.contains(target);
-    const isInsideMenu = menuElement && menuElement.contains(target);
-
-    // Fermer seulement si le clic est en dehors du composant ET du menu
-    if (!isInsideHost && !isInsideMenu) {
-      this.close();
-    }
-  }
-
   selectOption(opt: any) {
     const value = this.getValue(opt);
     this.selectedValue.set(value);
@@ -141,17 +163,40 @@ export class SelectComponent implements OnDestroy {
   }
 
   toggle() {
-    this.open.update((v) => !v);
+    const wasOpen = this.open();
+
+    // Si on ouvre ce menu, fermer tous les autres
+    if (!wasOpen) {
+      this.closeOtherInstances();
+    }
+
+    this.open.set(!wasOpen);
+
+    this.cdr.markForCheck();
+
     if (this.open()) {
-      setTimeout(() => this.updateMenuPosition(), 0);
+      setTimeout(() => {
+        this.updateMenuPosition();
+        this.cdr.markForCheck();
+      }, 0);
     } else {
-      this.close();
+      this.menuStyles = {};
     }
   }
 
   close() {
     this.open.set(false);
     this.menuStyles = {};
+    this.cdr.markForCheck();
+  }
+
+  private closeOtherInstances() {
+    // Fermer tous les autres menus Select ouverts
+    SelectComponent.activeInstances.forEach(instance => {
+      if (instance !== this && instance.open()) {
+        instance.close();
+      }
+    });
   }
 
   private updateMenuPosition() {
@@ -161,14 +206,40 @@ export class SelectComponent implements OnDestroy {
     const rect = btn.getBoundingClientRect();
     const menuEl = this.menu?.nativeElement;
 
-    let top = this.openUpward ? rect.top - (menuEl?.offsetHeight || 200) - 8 : rect.bottom + 8;
-    let left = rect.left;
+    // Hauteur estimée du menu (ou hauteur réelle si disponible)
+    const menuHeight = menuEl?.offsetHeight || 200;
 
-    // Ajustements pour éviter les débordements
-    if (this.openUpward && top < 8) {
-      top = rect.bottom + 8;
+    // Espace disponible en bas et en haut
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+
+    // Décider si on ouvre vers le haut ou vers le bas
+    let shouldOpenUpward = this.openUpward;
+
+    // Si pas assez d'espace en bas ET qu'il y a plus d'espace en haut, ouvrir vers le haut
+    if (!this.openUpward && spaceBelow < menuHeight + 16 && spaceAbove > spaceBelow) {
+      shouldOpenUpward = true;
     }
 
+    // Si forcé vers le haut mais pas assez d'espace, ouvrir vers le bas
+    if (this.openUpward && spaceAbove < menuHeight + 16 && spaceBelow > spaceAbove) {
+      shouldOpenUpward = false;
+    }
+
+    // Calculer la position top
+    let top = shouldOpenUpward ? rect.top - menuHeight - 8 : rect.bottom + 8;
+    let left = rect.left;
+
+    // Ajustement final pour éviter les débordements
+    if (shouldOpenUpward && top < 8) {
+      top = 8;
+    }
+
+    if (!shouldOpenUpward && top + menuHeight > window.innerHeight - 8) {
+      top = window.innerHeight - menuHeight - 8;
+    }
+
+    // Ajustement horizontal
     if (menuEl) {
       const estimatedWidth = Math.max(rect.width, menuEl.scrollWidth);
       if (left + estimatedWidth > window.innerWidth - 8) {
@@ -183,9 +254,5 @@ export class SelectComponent implements OnDestroy {
       minWidth: `${rect.width}px`,
       zIndex: 2147483647,
     };
-  }
-
-  ngOnDestroy(): void {
-    document.removeEventListener('click', this.documentClickHandler);
   }
 }
