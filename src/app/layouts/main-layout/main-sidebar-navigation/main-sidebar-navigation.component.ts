@@ -4,7 +4,6 @@ import { ListComponent } from '../../../components/list/list.component';
 import { ListItemComponent } from '../../../components/list-item/list-item.component';
 import { ListItemSectionComponent } from '../../../components/list-item-section/list-item-section.component';
 import { ListItemLabelComponent } from '../../../components/list-item-label/list-item-label.component';
-import { ExpansionItemComponent } from '../../../components/expansion-item/expansion-item.component';
 
 export interface ChatMode {
   id: string;
@@ -23,7 +22,6 @@ export interface ChatMode {
     ListItemComponent,
     ListItemSectionComponent,
     ListItemLabelComponent,
-    ExpansionItemComponent,
   ],
   templateUrl: './main-sidebar-navigation.component.html',
   styleUrl: './main-sidebar-navigation.component.css'
