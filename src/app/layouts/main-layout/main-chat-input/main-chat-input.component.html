@@ -16,6 +16,17 @@
 
   <!-- Affichage du modèle sélectionné -->
   <div class="mb-3 flex items-center justify-center space-x-3">
+    <!-- Sélecteur de mode de chat -->
+    <app-select
+      [options]="chatModeSelectOptions()"
+      [defaultValue]="selectedChatMode()"
+      [openUpward]="true"
+      placeholder="Choisir un mode"
+      (selection)="onChatModeSelect($event)"
+      buttonClass="bg-purple-50 hover:bg-purple-100 border-purple-200 text-sm"
+      menuClass="border-purple-200 min-w-[200px]"
+    />
+
     <!-- Sélecteur de modèle -->
     <app-select
       [options]="modelSelectOptions()"

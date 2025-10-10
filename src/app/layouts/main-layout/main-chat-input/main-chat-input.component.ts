@@ -33,19 +33,26 @@ export interface ChatModeInfo {
 })
 export class MainChatInputComponent {
   currentChatModeInfo = input<ChatModeInfo | null>(null);
+  chatModeSelectOptions = input<SelectOption[]>([]);
   modelSelectOptions = input<SelectOption[]>([]);
   reasoningLevelSelectOptions = input<SelectOption[]>([]);
+  selectedChatMode = input<string | null>(null);
   selectedModelId = input<string>('');
   selectedReasoningLevel = input<string>('medium');
   hasReasoning = input<boolean>(false);
   isSendButtonDisabled = input<boolean>(true);
 
+  chatModeSelect = output<string>();
   modelSelect = output<string>();
   reasoningLevelSelect = output<string>();
   inputChange = output<string>();
   attachClick = output<void>();
   microphoneClick = output<void>();
   sendMessage = output<void>();
+
+  onChatModeSelect(event: any) {
+    this.chatModeSelect.emit(event.value);
+  }
 
   onModelSelect(event: any) {
     this.modelSelect.emit(event.value);

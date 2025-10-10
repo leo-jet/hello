@@ -9,12 +9,15 @@
   <div class="w-full max-w-4xl">
     <app-main-chat-input
       [currentChatModeInfo]="currentChatModeInfo()"
+      [chatModeSelectOptions]="chatModeSelectOptions"
+      [selectedChatMode]="selectedChatMode()"
       [modelSelectOptions]="modelSelectOptions"
       [reasoningLevelSelectOptions]="reasoningLevelSelectOptions"
       [selectedModelId]="selectedModel().id"
       [selectedReasoningLevel]="selectedReasoningLevel()"
       [hasReasoning]="selectedModel().has_reasoning"
       [isSendButtonDisabled]="isSendButtonDisabled"
+      (chatModeSelect)="onChatModeSelect($event)"
       (modelSelect)="onModelSelect($event)"
       (reasoningLevelSelect)="onReasoningLevelSelect($event)"
       (inputChange)="onFooterInputChange($event)"
@@ -35,7 +38,7 @@
         hostClass="w-full"
         (cardClick)="onSuggestionClick('creative')"
       />
-      
+
       <app-suggestion-card
         title="Aide au code"
         description="Résoudre un problème de programmation"
@@ -44,7 +47,7 @@
         hostClass="w-full"
         (cardClick)="onSuggestionClick('code')"
       />
-      
+
       <app-suggestion-card
         title="Traduction"
         description="Traduire un texte dans une autre langue"
@@ -53,7 +56,7 @@
         hostClass="w-full"
         (cardClick)="onSuggestionClick('translation')"
       />
-      
+
       <app-suggestion-card
         title="Rédaction"
         description="Écrire un article ou un email"

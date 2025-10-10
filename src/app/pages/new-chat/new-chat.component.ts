@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MainChatInputComponent, ChatModeInfo } from '../../layouts/main-layout/main-chat-input/main-chat-input.component';
 import { SuggestionCardComponent } from '../../components/suggestion-card/suggestion-card.component';
+import { ChatModeService, ChatMode } from '../../services/chat-mode.service';
 
 interface AIModel {
   id: string;
@@ -19,6 +20,8 @@ interface AIModel {
   styleUrl: './new-chat.component.css'
 })
 export class NewChatComponent {
+  private chatModeService = inject(ChatModeService);
+
   // Modèles disponibles
   availableModels: AIModel[] = [
     {
@@ -57,11 +60,30 @@ export class NewChatComponent {
   // Niveau de raisonnement sélectionné
   selectedReasoningLevel = signal<'low' | 'medium' | 'high'>('medium');
 
+  // Mode de chat actuel (signal depuis le service)
+  selectedChatMode = signal<ChatMode>(null);
+
   // Mode de chat actuel
   currentChatModeInfo = signal<ChatModeInfo | null>(null);
 
   // État du bouton d'envoi
   isSendButtonDisabled = false;
+
+  // Modes de chat disponibles
+  chatModes: Array<{ mode: ChatMode; info: ChatModeInfo }> = [
+    { mode: 'basic', info: this.chatModeService.getModeInfo('basic') },
+    { mode: 'advanced', info: this.chatModeService.getModeInfo('advanced') },
+    { mode: 'rag', info: this.chatModeService.getModeInfo('rag') }
+  ];
+
+  // Options formatées pour le composant select (modes de chat)
+  get chatModeSelectOptions() {
+    return this.chatModes.map(({ mode, info }) => ({
+      value: mode as string,
+      label: info.label,
+      icon: info.icon
+    }));
+  }
 
   // Options formatées pour le composant select (modèles)
   get modelSelectOptions() {
@@ -79,6 +101,17 @@ export class NewChatComponent {
       { value: 'medium', label: 'Moyen', icon: '🟡' },
       { value: 'high', label: 'Élevé', icon: '🔴' }
     ];
+  }
+
+  /**
+   * Gérer la sélection d'un mode de chat
+   */
+  onChatModeSelect(mode: string): void {
+    const chatMode = mode as ChatMode;
+    this.selectedChatMode.set(chatMode);
+    this.chatModeService.setMode(chatMode);
+    this.currentChatModeInfo.set(this.chatModeService.getCurrentModeInfo());
+    console.log('Mode de chat sélectionné:', mode);
   }
 
   /**
