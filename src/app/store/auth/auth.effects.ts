@@ -4,9 +4,11 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { map, exhaustMap, catchError, tap } from 'rxjs/operators';
 
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '@app/api';
 import { NotificationService } from '../../services/notification.service';
+import { StorageKeys } from '@app/models';
 import * as AuthActions from './auth.actions';
+
 
 /**
  * Authentication Effects
@@ -28,8 +30,8 @@ export class AuthEffects {
       exhaustMap(action =>
         this.authService.login(action.credentials).pipe(
           map(response => {
-            // Store auth data in service
-            this.authService.setAuthData(response.data);
+            // Store auth data in localStorage
+            this.storeAuthData(response.data);
             return AuthActions.loginSuccess({ authResponse: response.data });
           }),
           catchError(error => of(AuthActions.loginFailure({ error: error.message })))
@@ -47,8 +49,8 @@ export class AuthEffects {
       exhaustMap(action =>
         this.authService.register(action.userData).pipe(
           map(response => {
-            // Store auth data in service
-            this.authService.setAuthData(response.data);
+            // Store auth data in localStorage
+            this.storeAuthData(response.data);
             return AuthActions.registerSuccess({ authResponse: response.data });
           }),
           catchError(error => of(AuthActions.registerFailure({ error: error.message })))
@@ -66,13 +68,13 @@ export class AuthEffects {
       exhaustMap(() =>
         this.authService.logout().pipe(
           map(() => {
-            // Clear auth data in service
-            this.authService.clearAuthData();
+            // Clear auth data from localStorage
+            this.clearAuthData();
             return AuthActions.logoutSuccess();
           }),
           catchError(error => {
             // Clear auth data even on error
-            this.authService.clearAuthData();
+            this.clearAuthData();
             return of(AuthActions.logoutFailure({ error: error.message }));
           })
         )
@@ -117,7 +119,10 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(AuthActions.changePassword),
       exhaustMap(action =>
-        this.authService.changePassword(action.oldPassword, action.newPassword).pipe(
+        this.authService.changePassword({
+          oldPassword: action.oldPassword,
+          newPassword: action.newPassword
+        }).pipe(
           map(() => AuthActions.changePasswordSuccess()),
           catchError(error => of(AuthActions.changePasswordFailure({ error: error.message })))
         )
@@ -132,14 +137,14 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(AuthActions.initializeAuth),
       exhaustMap(() => {
-        const token = this.authService.getAuthToken();
+        const token = this.getAuthToken();
         if (token) {
           // Token exists, load current user
           return this.authService.getCurrentUser().pipe(
             map(response => AuthActions.loadCurrentUserSuccess({ user: response.data })),
             catchError(error => {
               // Token invalid, clear auth data
-              this.authService.clearAuthData();
+              this.clearAuthData();
               return of(AuthActions.loadCurrentUserFailure({ error: error.message }));
             })
           );
@@ -232,4 +237,29 @@ export class AuthEffects {
       ),
     { dispatch: false }
   );
+
+  /**
+   * Helper method to store authentication data in localStorage
+   */
+  private storeAuthData(authResponse: any): void {
+    localStorage.setItem(StorageKeys.AUTH_TOKEN, authResponse.token);
+    localStorage.setItem(StorageKeys.REFRESH_TOKEN, authResponse.refreshToken);
+    localStorage.setItem('user', JSON.stringify(authResponse.user));
+  }
+
+  /**
+   * Helper method to clear authentication data from localStorage
+   */
+  private clearAuthData(): void {
+    localStorage.removeItem(StorageKeys.AUTH_TOKEN);
+    localStorage.removeItem(StorageKeys.REFRESH_TOKEN);
+    localStorage.removeItem('user');
+  }
+
+  /**
+   * Helper method to get auth token from localStorage
+   */
+  private getAuthToken(): string | null {
+    return localStorage.getItem(StorageKeys.AUTH_TOKEN);
+  }
 }

@@ -2,39 +2,26 @@
 
 This folder contains Angular services that provide business logic, data management, and cross-cutting concerns for the application.
 
+> **Note**: API services (HTTP communication with backend) are located in the `/api` folder.
+
 ## Available Services
 
-### Base API Service (`base-api.service.ts`)
-Foundation service for all HTTP operations:
-- **Generic HTTP Methods**: GET, POST, PUT, PATCH, DELETE
-- **Error Handling**: Centralized error processing with user-friendly messages
-- **Request Configuration**: Timeout, retry, headers, and parameters
-- **File Operations**: Upload and download functionality
-- **Type Safety**: Generic response types with TypeScript
+### Facade Services
 
-**Key Features:**
-- Automatic retry on failure
-- Request timeout handling
-- Centralized error mapping
-- Base URL configuration from environment
-- Request/response logging integration
+#### Auth Facade (`auth-facade.service.ts`)
+Simplified interface for authentication state management:
+- Uses NgRx Store for state management
+- Provides observables for auth state
+- Dispatches authentication actions
+- Integrates with AuthService from `/api` folder
 
-### Auth Service (`auth.service.ts`)
-Handles user authentication and session management:
-- **Authentication**: Login, register, logout operations
-- **Session Management**: Token storage and refresh
-- **User State**: Current user observable and state management
-- **Password Operations**: Change password, reset password
-- **Role Management**: Role-based access control helpers
+#### UI Facade (`ui-facade.service.ts`)
+Unified interface for UI-related services:
+- Combines LoadingService, NotificationService, ThemeService
+- Provides simplified API for common UI operations
+- Reduces boilerplate in components
 
-**Key Features:**
-- Reactive user state with BehaviorSubject
-- Automatic token refresh
-- Local storage integration
-- Role-based access checks
-- Profile management
-
-### Loading Service (`loading.service.ts`)
+### Core Services Loading Service (`loading.service.ts`)
 Manages global loading states:
 - **Loading Counter**: Track multiple concurrent operations
 - **Observable State**: Reactive loading state for UI components
@@ -189,7 +176,7 @@ describe('AuthService', () => {
 
   it('should login user', () => {
     const mockResponse = { data: mockUser, token: 'token' };
-    
+
     service.login(mockCredentials).subscribe(response => {
       expect(response.data).toEqual(mockUser);
     });

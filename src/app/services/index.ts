@@ -1,6 +1,8 @@
-// Export all services for easy import
-export { BaseApiService } from './base-api.service';
-export { AuthService } from './auth.service';
+// Export API services from api folder
+export { BaseApiService } from '../api/base-api.service';
+export { AuthService } from '../api/auth.service';
+
+// Export other services
 export { LoadingService } from './loading.service';
 export { NotificationService } from './notification.service';
 export { ThemeService } from './theme.service';
@@ -10,10 +12,6 @@ export { StorageService } from './storage.service';
 export { AuthFacade } from './auth-facade.service';
 export { UiFacade } from './ui-facade.service';
 
-// Export interfaces and types
-export type { ApiRequestConfig, ApiResponse, PaginatedResponse } from './base-api.service';
-export type { User, LoginCredentials, RegisterData, AuthResponse } from './auth.service';
-export type { NotificationType, Notification } from './notification.service';
-export type { Theme } from './theme.service';
-export type { UserPreferences } from './storage.service';
-export { StorageKeys } from './storage.service';
+// Note: All interfaces and types are now exported from @app/models
+// Import them using: import { User, LoginCredentials, ApiResponse, etc. } from '@app/models';
+

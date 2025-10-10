@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-
-/**
- * Theme types
- */
-export type Theme = 'light' | 'dark' | 'auto';
+import { Theme } from '@app/models';
 
 /**
  * Theme Service

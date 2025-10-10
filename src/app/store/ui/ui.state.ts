@@ -1,4 +1,4 @@
-import { Theme } from '../../services/theme.service';
+import { Theme } from '@app/models';
 
 /**
  * UI State interface

@@ -3,39 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry, timeout } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-
-/**
- * Configuration interface for API requests
- */
-export interface ApiRequestConfig {
-  headers?: HttpHeaders | { [header: string]: string | string[] };
-  params?: HttpParams | { [param: string]: string | string[] };
-  timeout?: number;
-  retries?: number;
-  reportProgress?: boolean;
-}
-
-/**
- * Generic API response interface
- */
-export interface ApiResponse<T = any> {
-  data: T;
-  message?: string;
-  status: number;
-  success: boolean;
-}
-
-/**
- * Pagination interface
- */
-export interface PaginatedResponse<T = any> extends ApiResponse<T[]> {
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
-}
+import { ApiRequestConfig, ApiResponse, PaginatedResponse } from '@app/models';
 
 /**
  * Base API Service that provides common HTTP operations

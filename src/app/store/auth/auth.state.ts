@@ -1,4 +1,5 @@
-import { User } from '../../services/auth.service';
+import { User } from '@app/models';
+
 
 /**
  * Authentication State interface

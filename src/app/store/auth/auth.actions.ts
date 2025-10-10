@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
-import { User, LoginCredentials, RegisterData, AuthResponse } from '../../services/auth.service';
+import { User, LoginCredentials, RegisterData, AuthResponse } from '@app/models';
+
 
 /**
  * Login Actions

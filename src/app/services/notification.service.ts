@@ -1,23 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-
-/**
- * Notification types
- */
-export type NotificationType = 'success' | 'error' | 'warning' | 'info';
-
-/**
- * Notification interface
- */
-export interface Notification {
-  id: string;
-  type: NotificationType;
-  title: string;
-  message?: string;
-  duration?: number;
-  persistent?: boolean;
-  timestamp: Date;
-}
+import { Notification, NotificationType } from '@app/models';
 
 /**
  * Notification Service

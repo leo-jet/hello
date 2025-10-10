@@ -1,33 +1,6 @@
 import { Injectable } from '@angular/core';
 import { StorageUtils } from '../utils';
-
-/**
- * Storage keys enum
- */
-export enum StorageKeys {
-  USER_PREFERENCES = 'user_preferences',
-  APP_SETTINGS = 'app_settings',
-  CART_ITEMS = 'cart_items',
-  RECENT_SEARCHES = 'recent_searches',
-  FORM_DRAFTS = 'form_drafts'
-}
-
-/**
- * User preferences interface
- */
-export interface UserPreferences {
-  language: string;
-  timezone: string;
-  notifications: {
-    email: boolean;
-    push: boolean;
-    sms: boolean;
-  };
-  privacy: {
-    profileVisibility: 'public' | 'private' | 'friends';
-    shareData: boolean;
-  };
-}
+import { StorageKeys, UserPreferences } from '@app/models';
 
 /**
  * Storage Service
@@ -37,7 +10,7 @@ export interface UserPreferences {
   providedIn: 'root'
 })
 export class StorageService {
-  
+
   /**
    * Save user preferences
    */
@@ -213,7 +186,7 @@ export class StorageService {
       formDrafts: this.getFormDrafts(),
       exportDate: new Date().toISOString()
     };
-    
+
     return JSON.stringify(data, null, 2);
   }
 
@@ -223,23 +196,23 @@ export class StorageService {
   importUserData(jsonData: string): boolean {
     try {
       const data = JSON.parse(jsonData);
-      
+
       if (data.preferences) {
         this.saveUserPreferences(data.preferences);
       }
-      
+
       if (data.settings) {
         this.saveAppSettings(data.settings);
       }
-      
+
       if (data.recentSearches) {
         this.saveRecentSearches(data.recentSearches);
       }
-      
+
       if (data.formDrafts) {
         StorageUtils.setLocal(StorageKeys.FORM_DRAFTS, data.formDrafts);
       }
-      
+
       return true;
     } catch (error) {
       console.error('Error importing user data:', error);

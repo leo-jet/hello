@@ -5,7 +5,8 @@ import { Observable } from 'rxjs';
 import { AppState } from '../store/app.state';
 import * as AuthActions from '../store/auth/auth.actions';
 import * as AuthSelectors from '../store/auth/auth.selectors';
-import { LoginCredentials, RegisterData, User } from '../services/auth.service';
+import { LoginCredentials, RegisterData, User } from '@app/models';
+
 
 /**
  * Auth Facade Service

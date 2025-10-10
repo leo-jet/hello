@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Theme } from '../../services/theme.service';
+import { Theme } from '@app/models';
 import { Breadcrumb, Notification } from './ui.state';
 
 /**

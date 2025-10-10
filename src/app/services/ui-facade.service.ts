@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../store/app.state';
 import * as UiActions from '../store/ui/ui.actions';
 import * as UiSelectors from '../store/ui/ui.selectors';
-import { Theme } from '../services/theme.service';
+import { Theme } from '@app/models';
 import { Breadcrumb } from '../store/ui/ui.state';
 
 /**
