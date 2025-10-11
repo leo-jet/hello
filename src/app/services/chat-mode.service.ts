@@ -1,4 +1,7 @@
 import { Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { LlmModel } from '@app/models';
 
 export type ChatMode = 'basic' | 'advanced' | 'rag' | null;
 
@@ -17,6 +20,8 @@ export class ChatModeService {
 
   // Signal en lecture seule pour le mode actuel
   currentMode = this._currentMode.asReadonly();
+
+  constructor(private http: HttpClient) {}
 
   // Informations sur les modes disponibles
   private modeInfoMap: Record<NonNullable<ChatMode>, ChatModeInfo> = {
@@ -67,5 +72,22 @@ export class ChatModeService {
    */
   clearMode(): void {
     this._currentMode.set(null);
+  }
+
+  /**
+   * Charge les modèles LLM depuis l'API
+   */
+  async loadLlmModels(): Promise<LlmModel[]> {
+    try {
+      // Appel API (remplacez l'URL par votre endpoint réel)
+      const models = await firstValueFrom(
+        this.http.get<LlmModel[]>('/api/llm-models')
+      );
+
+      return models;
+    } catch (error) {
+      console.error('Erreur lors du chargement des modèles LLM:', error);
+      throw error;
+    }
   }
 }

@@ -15,3 +15,6 @@ export * from './notification.model';
 
 // Common models (theme, storage, preferences)
 export * from './common.model';
+
+// LLM models
+export * from './llm.model';

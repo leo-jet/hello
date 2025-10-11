@@ -1,6 +1,21 @@
-import { Component, ChangeDetectionStrategy, signal, computed, ContentChild, TemplateRef, AfterContentInit } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  signal,
+  computed,
+  ContentChild,
+  TemplateRef,
+  AfterContentInit,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router';
+import {
+  RouterOutlet,
+  RouterLink,
+  Router,
+  NavigationEnd,
+} from '@angular/router';
 import { ChatModeService } from '../../services/chat-mode.service';
 import { filter } from 'rxjs/operators';
 
@@ -19,6 +34,7 @@ import { MainConversationItemComponent } from './main-conversation-item/main-con
 
 // Import du Dialog
 import { DialogComponent } from '../../components/dialog/dialog.component';
+import { ChatStore } from '../../stores/chat.store';
 
 // Interface pour les modèles AI
 interface AIModel {
@@ -44,14 +60,17 @@ interface AIModel {
     ListItemLabelComponent,
     MainSidebarNavigationComponent,
     MainConversationItemComponent,
-    DialogComponent
+    DialogComponent,
   ],
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MainLayoutComponent implements AfterContentInit {
+export class MainLayoutComponent implements AfterContentInit, OnInit {
   title = 'Template Widget';
+
+  // Injection du ChatStore (SignalStore)
+  readonly chatStore = inject(ChatStore);
 
   // État de la sidebar
   sidebarOpen = signal(false);
@@ -74,11 +93,16 @@ export class MainLayoutComponent implements AfterContentInit {
   ) {
     // Écouter les changements de route
     this.currentRoute.set(this.router.url);
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: any) => {
-      this.currentRoute.set(event.url);
-    });
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        this.currentRoute.set(event.url);
+      });
+  }
+
+  ngOnInit() {
+    // Charger les modèles LLM depuis le store
+    this.chatStore.loadModels();
   }
 
   // État du menu expandable des modes de chat
@@ -86,7 +110,9 @@ export class MainLayoutComponent implements AfterContentInit {
 
   // Mode de chat actuel
   currentChatMode = computed(() => this.chatModeService.currentMode());
-  currentChatModeInfo = computed(() => this.chatModeService.getCurrentModeInfo());
+  currentChatModeInfo = computed(() =>
+    this.chatModeService.getCurrentModeInfo()
+  );
 
   // Modes de chat disponibles
   chatModes = [
@@ -96,7 +122,7 @@ export class MainLayoutComponent implements AfterContentInit {
       icon: 'fa-comments',
       color: 'text-blue-500',
       route: '/chat/basic',
-      description: 'Chat simple et direct'
+      description: 'Chat simple et direct',
     },
     {
       id: 'advanced',
@@ -104,7 +130,7 @@ export class MainLayoutComponent implements AfterContentInit {
       icon: 'fa-brain',
       color: 'text-green-500',
       route: '/chat/advanced',
-      description: 'Chat avec raisonnement'
+      description: 'Chat avec raisonnement',
     },
     {
       id: 'rag',
@@ -112,8 +138,8 @@ export class MainLayoutComponent implements AfterContentInit {
       icon: 'fa-database',
       color: 'text-purple-500',
       route: '/chat/rag',
-      description: 'Chat avec documents'
-    }
+      description: 'Chat avec documents',
+    },
   ];
 
   // Modèles disponibles
@@ -123,29 +149,29 @@ export class MainLayoutComponent implements AfterContentInit {
       display_name: 'Chat GPT 4',
       description: 'Modèle puissant pour tâches complexes',
       has_reasoning: true,
-      reasoning_level: ['medium', 'high']
+      reasoning_level: ['medium', 'high'],
     },
     {
       id: 'gpt-5',
       display_name: 'Chat GPT 5',
       description: 'Nouvelles idées interessantes',
       has_reasoning: true,
-      reasoning_level: ['low', 'medium']
+      reasoning_level: ['low', 'medium'],
     },
     {
       id: 'claude-3',
       display_name: 'Claude 3',
-      description: 'Excellent pour l\'analyse et la créativité',
+      description: "Excellent pour l'analyse et la créativité",
       has_reasoning: true,
-      reasoning_level: ['medium', 'high']
+      reasoning_level: ['medium', 'high'],
     },
     {
       id: 'gemini-pro',
       display_name: 'Gemini Pro',
       description: 'Modèle multimodal avancé',
       has_reasoning: false,
-      reasoning_level: []
-    }
+      reasoning_level: [],
+    },
   ];
 
   // Modèle actuellement sélectionné
@@ -162,10 +188,10 @@ export class MainLayoutComponent implements AfterContentInit {
 
   // Options formatées pour le composant select (modèles)
   get modelSelectOptions() {
-    return this.availableModels.map(model => ({
+    return this.availableModels.map((model) => ({
       value: model.id,
       label: model.display_name,
-      icon: '🤖'
+      icon: '🤖',
     }));
   }
 
@@ -173,10 +199,15 @@ export class MainLayoutComponent implements AfterContentInit {
   get reasoningLevelSelectOptions() {
     if (!this.selectedModel().has_reasoning) return [];
 
-    return this.selectedModel().reasoning_level.map(level => ({
+    return this.selectedModel().reasoning_level.map((level) => ({
       value: level,
-      label: level === 'low' ? 'Rapide' : level === 'medium' ? 'Équilibré' : 'Approfondi',
-      icon: level === 'low' ? '⚡' : level === 'medium' ? '⚖️' : '🧠'
+      label:
+        level === 'low'
+          ? 'Rapide'
+          : level === 'medium'
+          ? 'Équilibré'
+          : 'Approfondi',
+      icon: level === 'low' ? '⚡' : level === 'medium' ? '⚖️' : '🧠',
     }));
   }
 
@@ -184,7 +215,7 @@ export class MainLayoutComponent implements AfterContentInit {
   get simpleReasoningLevels() {
     if (!this.selectedModel().has_reasoning) return [];
     return this.selectedModel().reasoning_level; // Retourne ['low', 'medium', 'high']
-  }  // Année actuelle
+  } // Année actuelle
   currentYear = new Date().getFullYear();
 
   // Vérifier si du contenu footer personnalisé est fourni
@@ -197,62 +228,62 @@ export class MainLayoutComponent implements AfterContentInit {
       title: 'Discussion sur Angular 19',
       lastMessage: 'Comment implémenter les signals ?',
       timestamp: new Date(Date.now() - 30 * 60 * 1000), // 30 min ago
-      unreadCount: 2
+      unreadCount: 2,
     },
     {
       id: '2',
       title: 'Projet Template Widget',
       lastMessage: 'La sidebar est presque terminée',
       timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2h ago
-      unreadCount: 0
+      unreadCount: 0,
     },
     {
       id: '3',
       title: 'Aide sur TypeScript',
-      lastMessage: 'Merci pour l\'explication !',
+      lastMessage: "Merci pour l'explication !",
       timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000), // 5h ago
-      unreadCount: 1
+      unreadCount: 1,
     },
     {
       id: '4',
       title: 'Optimisation Performance',
       lastMessage: 'OnPush change detection...',
       timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
-      unreadCount: 0
+      unreadCount: 0,
     },
     {
       id: '5',
       title: 'Questions CSS',
       lastMessage: 'Tailwind vs CSS modules ?',
       timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-      unreadCount: 3
+      unreadCount: 3,
     },
     {
       id: '6',
       title: 'Déploiement Azure',
       lastMessage: 'Configuration des pipelines',
       timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
-      unreadCount: 0
+      unreadCount: 0,
     },
     {
       id: '7',
       title: 'Révision de code',
       lastMessage: 'PR approuvée ✅',
       timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
-      unreadCount: 0
+      unreadCount: 0,
     },
     {
       id: '8',
       title: 'Brainstorming Features',
       lastMessage: 'Nouvelles idées interessantes',
       timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
-      unreadCount: 1
-    }
+      unreadCount: 1,
+    },
   ];
 
   opts = [
     { id: 1, name: 'Option A', meta: 'A' },
-    { id: 2, name: 'Option B', meta: 'B' }
+    { id: 2, name: 'Option B', meta: 'B' },
   ];
 
   selectedObject = signal<any | null>(null);
@@ -263,17 +294,15 @@ export class MainLayoutComponent implements AfterContentInit {
     this.hasFooterContent.set(!!this.footerContent);
   }
 
-
   onSelectObject(ev: unknown) {
     this.selectedObject.set(ev as any);
   }
-
 
   /**
    * Basculer l'état de la sidebar
    */
   toggleSidebar() {
-    this.sidebarOpen.update(current => !current);
+    this.sidebarOpen.update((current) => !current);
   }
 
   /**
@@ -293,18 +322,26 @@ export class MainLayoutComponent implements AfterContentInit {
   /**
    * Obtenir le badge d'un projet selon son statut
    */
-  getProjectBadge(status: string): { text: string; type?: 'success' | 'warning' | 'error' | 'info' | 'default' } {
-    const statusMap: { [key: string]: { text: string; type: 'success' | 'warning' | 'error' | 'info' | 'default' } } = {
-      'Nouveau': { text: 'NEW', type: 'info' },
+  getProjectBadge(status: string): {
+    text: string;
+    type?: 'success' | 'warning' | 'error' | 'info' | 'default';
+  } {
+    const statusMap: {
+      [key: string]: {
+        text: string;
+        type: 'success' | 'warning' | 'error' | 'info' | 'default';
+      };
+    } = {
+      Nouveau: { text: 'NEW', type: 'info' },
       'En cours': { text: 'WIP', type: 'warning' },
       'En développement': { text: 'DEV', type: 'warning' },
       'En test': { text: 'TEST', type: 'info' },
       'En révision': { text: 'REV', type: 'info' },
-      'Déployé': { text: 'LIVE', type: 'success' },
-      'Maintenance': { text: 'MAINT', type: 'warning' },
-      'Suspendu': { text: 'PAUSE', type: 'default' },
-      'Archivé': { text: 'ARCH', type: 'default' },
-      'Fermé': { text: 'DONE', type: 'success' }
+      Déployé: { text: 'LIVE', type: 'success' },
+      Maintenance: { text: 'MAINT', type: 'warning' },
+      Suspendu: { text: 'PAUSE', type: 'default' },
+      Archivé: { text: 'ARCH', type: 'default' },
+      Fermé: { text: 'DONE', type: 'success' },
     };
 
     return statusMap[status] || { text: 'UNK', type: 'default' };
@@ -333,7 +370,9 @@ export class MainLayoutComponent implements AfterContentInit {
    */
   deleteConversation(chatId: string, event: Event) {
     event.stopPropagation(); // Empêcher la navigation vers le chat
-    this.conversations = this.conversations.filter(conv => conv.id !== chatId);
+    this.conversations = this.conversations.filter(
+      (conv) => conv.id !== chatId
+    );
     console.log('Conversation supprimée:', chatId);
   }
 
@@ -341,7 +380,9 @@ export class MainLayoutComponent implements AfterContentInit {
    * Gérer la suppression d'une conversation depuis le composant enfant
    */
   handleDeleteConversation(conversation: any) {
-    this.conversations = this.conversations.filter(conv => conv.id !== conversation.id);
+    this.conversations = this.conversations.filter(
+      (conv) => conv.id !== conversation.id
+    );
     console.log('Conversation supprimée:', conversation.id);
   }
 
@@ -364,7 +405,7 @@ export class MainLayoutComponent implements AfterContentInit {
     } else {
       return timestamp.toLocaleDateString('fr-FR', {
         day: 'numeric',
-        month: 'short'
+        month: 'short',
       });
     }
   }
@@ -414,12 +455,18 @@ export class MainLayoutComponent implements AfterContentInit {
 
   // Méthode pour changer de modèle via le composant select
   onModelSelect(modelId: unknown): void {
-    const model = this.availableModels.find(m => m.id === modelId);
+    // Appeler la méthode du store pour sélectionner le modèle
+    this.chatStore.selectModel(modelId as string);
+
+    const model = this.availableModels.find((m) => m.id === modelId);
     if (model) {
       this.selectedModel.set(model);
 
       // Si le modèle a du reasoning, vérifier que le niveau sélectionné est valide
-      if (model.has_reasoning && !model.reasoning_level.includes(this.selectedReasoningLevel())) {
+      if (
+        model.has_reasoning &&
+        !model.reasoning_level.includes(this.selectedReasoningLevel())
+      ) {
         // Prendre le premier niveau disponible par défaut
         this.selectedReasoningLevel.set(model.reasoning_level[0]);
       }
@@ -439,11 +486,17 @@ export class MainLayoutComponent implements AfterContentInit {
 
   // Méthode pour changer de modèle (ancienne version - gardée pour compatibilité)
   selectModel(model: AIModel): void {
+    // Appeler la méthode du store pour sélectionner le modèle
+    this.chatStore.selectModel(model.id);
+
     this.selectedModel.set(model);
     this.showModelSelector.set(false); // Fermer le sélecteur après sélection
 
     // Si le modèle a du reasoning, vérifier que le niveau sélectionné est valide
-    if (model.has_reasoning && !model.reasoning_level.includes(this.selectedReasoningLevel())) {
+    if (
+      model.has_reasoning &&
+      !model.reasoning_level.includes(this.selectedReasoningLevel())
+    ) {
       // Prendre le premier niveau disponible par défaut
       this.selectedReasoningLevel.set(model.reasoning_level[0]);
     }
@@ -456,7 +509,7 @@ export class MainLayoutComponent implements AfterContentInit {
 
   // Méthode pour basculer l'affichage du sélecteur de modèle
   toggleModelSelector(): void {
-    this.showModelSelector.update(current => !current);
+    this.showModelSelector.update((current) => !current);
     this.showReasoningLevelSelector.set(false); // Fermer le sélecteur de niveau si ouvert
   }
 
@@ -469,17 +522,19 @@ export class MainLayoutComponent implements AfterContentInit {
 
   // Méthode pour basculer l'affichage du sélecteur de niveau de raisonnement
   toggleReasoningLevelSelector(): void {
-    this.showReasoningLevelSelector.update(current => !current);
+    this.showReasoningLevelSelector.update((current) => !current);
   }
 
   // Computed pour obtenir les niveaux de raisonnement disponibles
   get availableReasoningLevels(): ('low' | 'medium' | 'high')[] {
-    return this.selectedModel().has_reasoning ? this.selectedModel().reasoning_level : [];
+    return this.selectedModel().has_reasoning
+      ? this.selectedModel().reasoning_level
+      : [];
   }
 
   // Méthodes pour le menu expandable des modes de chat
   toggleChatModesMenu(): void {
-    this.chatModesExpanded.update(current => !current);
+    this.chatModesExpanded.update((current) => !current);
   }
 
   navigateToChatMode(mode: any): void {

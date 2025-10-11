@@ -26,7 +26,9 @@
       "@app/services": ["src/app/services/index.ts"],
       "@app/services/*": ["src/app/services/*"],
       "@app/components": ["src/app/components/index.ts"],
-      "@app/components/*": ["src/app/components/*"]
+      "@app/components/*": ["src/app/components/*"],
+      "@app/store": ["src/app/store/index.ts"],
+      "@app/store/*": ["src/app/store/*"]
     }
   },
   "angularCompilerOptions": {

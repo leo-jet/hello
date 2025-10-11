@@ -55,7 +55,8 @@ export class MainChatInputComponent {
   }
 
   onModelSelect(event: any) {
-    this.modelSelect.emit(event.value);
+    console.log('Event model select:', event);
+    this.modelSelect.emit(event);
   }
 
   onReasoningLevelSelect(event: any) {

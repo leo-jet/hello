@@ -1,4 +1,4 @@
-﻿import { Component, signal, computed, effect } from '@angular/core';
+﻿import { Component, signal, computed, effect, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -6,14 +6,7 @@ import { map } from 'rxjs/operators';
 import { ChatModeService } from '../../services/chat-mode.service';
 import { MainLayoutComponent } from '../main-layout/main-layout.component';
 import { MainChatInputComponent } from '../main-layout/main-chat-input/main-chat-input.component';
-
-interface AIModel {
-  id: string;
-  display_name: string;
-  description: string;
-  has_reasoning: boolean;
-  reasoning_level: ('low' | 'medium' | 'high')[];
-}
+import { ChatStore } from '../../stores/chat.store';
 
 @Component({
   selector: 'app-chat-layout',
@@ -22,7 +15,10 @@ interface AIModel {
   templateUrl: './chat-layout.component.html',
   styleUrls: ['./chat-layout.component.css']
 })
-export class ChatLayoutComponent {
+export class ChatLayoutComponent implements OnInit {
+  // Injection du ChatStore (SignalStore)
+  readonly chatStore = inject(ChatStore);
+
   messageValue = signal<string>('');
 
   // Sera initialisé dans le constructeur
@@ -51,22 +47,19 @@ export class ChatLayoutComponent {
     });
   }
 
+  ngOnInit() {
+    // Charger les modèles LLM depuis le store
+    this.chatStore.loadModels();
+  }
+
   currentChatModeInfo = computed(() => this.chatModeService.getCurrentModeInfo());
 
-  availableModels: AIModel[] = [
-    { id: 'gpt-4', display_name: 'GPT-4', description: 'Modèle avancé', has_reasoning: false, reasoning_level: [] },
-    { id: 'gpt-5', display_name: 'GPT-5 Pro', description: 'Avec raisonnement', has_reasoning: true, reasoning_level: ['low', 'medium', 'high'] },
-    { id: 'claude-3', display_name: 'Claude 3', description: 'Anthropic', has_reasoning: false, reasoning_level: [] },
-    { id: 'gemini-pro', display_name: 'Gemini Pro', description: 'Multimodal', has_reasoning: false, reasoning_level: [] }
-  ];
-
-  selectedModel = signal<AIModel>(this.availableModels[1]);
   selectedReasoningLevel = signal<'low' | 'medium' | 'high'>('medium');
 
   get isSendButtonDisabled(): boolean { return this.messageValue().trim().length === 0; }
 
   get modelSelectOptions() {
-    return this.availableModels.map(m => ({ value: m.id, label: m.display_name, icon: '' }));
+    return this.chatStore.availableModels().map(m => ({ value: m.id, label: m.name, icon: '' }));
   }
 
   get reasoningLevelSelectOptions() {
@@ -78,8 +71,9 @@ export class ChatLayoutComponent {
   }
 
   onModelSelect(modelId: string): void {
-    const model = this.availableModels.find(m => m.id === modelId);
-    if (model) this.selectedModel.set(model);
+    // Appeler la méthode du store pour sélectionner le modèle
+    console.log('Modèle sélectionné 999999999999999999999:', modelId);
+    this.chatStore.selectModel(modelId);
   }
 
   onReasoningLevelSelect(level: string): void {

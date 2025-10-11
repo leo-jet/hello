@@ -64,10 +64,5 @@ export const routes: Routes = [
       }
     ]
   },
-  {
-    path: 'ngrx-example',
-    title: 'Exemple NgRx - ChatApp',
-    loadComponent: () => import('./components/ngrx-example/ngrx-example.component').then(m => m.NgRxExampleComponent)
-  },
   ...DOCS_ROUTES
 ];

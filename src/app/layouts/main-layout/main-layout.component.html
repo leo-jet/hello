@@ -5,8 +5,8 @@
     <div slot="header">
       <!-- Logo et titre -->
       <div class="mb-4 flex items-center space-x-2">
-        <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
-          <i class="fas fa-comments text-white" aria-hidden="true"></i>
+        <div class="w-8 h-8 rounded flex items-center justify-center">
+          <img src="gemini.png" alt="Gemini Logo" class="w-full h-full object-contain">
         </div>
         <h2 class="text-lg font-semibold text-gray-900">ChatApp</h2>
       </div>
@@ -96,7 +96,7 @@
     >
       <!-- Contenu header personnalisé -->
       <div slot="right">
-        <ng-content select="[header]"></ng-content>
+        <ng-content select="[header]"> {{chatStore.selectedModelId()}}</ng-content>
       </div>
 
       <!-- Actions additionnelles -->

@@ -6,3 +6,4 @@ export { loggingInterceptor } from './logging.interceptor';
 export { retryInterceptor } from './retry.interceptor';
 export { timeoutInterceptor } from './timeout.interceptor';
 export { headersInterceptor } from './headers.interceptor';
+export { mockLlmModelsInterceptor } from './mock-llm-models.interceptor';
