@@ -50,28 +50,38 @@
 
     <!-- Footer de la sidebar -->
     <div slot="footer" class="p-4 border-t">
-      <!-- Profil utilisateur -->
-      <div class="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
-        <!-- Avatar -->
-        <div class="flex-shrink-0">
-          <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center">
-            <span class="text-white font-medium text-sm">EU</span>
-          </div>
-        </div>
+      <!-- Menu actions -->
+      <app-list [dense]="true">
+        <!-- Paramètres -->
+        <app-list-item (activate)="openSettingsDialog()">
+          <app-list-item-section [avatar]="true">
+            <i class="fas fa-cog text-lg"></i>
+          </app-list-item-section>
+          <app-list-item-section>
+            <app-list-item-label>Paramètres</app-list-item-label>
+          </app-list-item-section>
+        </app-list-item>
 
-        <!-- Informations utilisateur -->
-        <div class="flex-1 min-w-0">
-          <p class="text-sm font-medium text-gray-900 truncate">
-            Emman Utilisateur
-          </p>
-          <p class="text-xs text-gray-500 truncate">emmanu&#64;example.com</p>
-        </div>
+        <!-- Profil -->
+        <app-list-item (activate)="openProfileDialog()">
+          <app-list-item-section [avatar]="true">
+            <i class="fas fa-user text-lg"></i>
+          </app-list-item-section>
+          <app-list-item-section>
+            <app-list-item-label>Profil</app-list-item-label>
+          </app-list-item-section>
+        </app-list-item>
 
-        <!-- Icône paramètres -->
-        <div class="flex-shrink-0">
-          <i class="fas fa-cog text-gray-400 hover:text-gray-600" aria-hidden="true"></i>
-        </div>
-      </div>
+        <!-- Aide -->
+        <app-list-item (activate)="openHelpDialog()">
+          <app-list-item-section [avatar]="true">
+            <i class="fas fa-question-circle text-lg"></i>
+          </app-list-item-section>
+          <app-list-item-section>
+            <app-list-item-label>Aide</app-list-item-label>
+          </app-list-item-section>
+        </app-list-item>
+      </app-list>
     </div>
   </app-sidebar>
 
@@ -90,7 +100,7 @@
       </div>
 
       <!-- Actions additionnelles -->
-      
+
     </app-header>
 
     <!-- Contenu principal -->
@@ -108,4 +118,152 @@
   <!-- Overlay pour mobile -->
   <app-overlay [show]="sidebarOpen()" (clickEvent)="closeSidebar()">
   </app-overlay>
+
+  <!-- Dialog Paramètres -->
+  <app-dialog [(visible)]="settingsDialogVisible" [cardClass]="'w-[600px]'">
+    <div dialog-header class="px-6 py-4 border-b border-gray-200 bg-white">
+      <h2 class="text-xl font-bold text-gray-900">Paramètres</h2>
+    </div>
+
+    <div class="px-6 py-6 space-y-4">
+      <div>
+        <h3 class="text-sm font-semibold text-gray-700 mb-2">Apparence</h3>
+        <div class="space-y-2">
+          <label class="flex items-center space-x-2">
+            <input type="checkbox" class="rounded border-gray-300">
+            <span class="text-sm text-gray-700">Mode sombre</span>
+          </label>
+          <label class="flex items-center space-x-2">
+            <input type="checkbox" class="rounded border-gray-300">
+            <span class="text-sm text-gray-700">Animations</span>
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-sm font-semibold text-gray-700 mb-2">Notifications</h3>
+        <div class="space-y-2">
+          <label class="flex items-center space-x-2">
+            <input type="checkbox" class="rounded border-gray-300" checked>
+            <span class="text-sm text-gray-700">Notifications push</span>
+          </label>
+          <label class="flex items-center space-x-2">
+            <input type="checkbox" class="rounded border-gray-300">
+            <span class="text-sm text-gray-700">Sons</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div dialog-footer class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-2">
+      <button (click)="settingsDialogVisible.set(false)" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded transition">
+        Annuler
+      </button>
+      <button (click)="settingsDialogVisible.set(false)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition">
+        Enregistrer
+      </button>
+    </div>
+  </app-dialog>
+
+  <!-- Dialog Profil -->
+  <app-dialog [(visible)]="profileDialogVisible" [cardClass]="'w-[500px]'">
+    <div dialog-header class="px-6 py-4 border-b border-gray-200 bg-white">
+      <h2 class="text-xl font-bold text-gray-900">Mon Profil</h2>
+    </div>
+
+    <div class="px-6 py-6 space-y-4">
+      <!-- Avatar -->
+      <div class="flex justify-center">
+        <div class="w-20 h-20 bg-purple-500 rounded-full flex items-center justify-center">
+          <span class="text-white font-medium text-2xl">EU</span>
+        </div>
+      </div>
+
+      <!-- Informations -->
+      <div class="space-y-3">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+          <input type="text" value="Emman Utilisateur" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <input type="email" value="emmanu@example.com" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+          <textarea rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Parlez-nous de vous..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div dialog-footer class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-2">
+      <button (click)="profileDialogVisible.set(false)" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded transition">
+        Annuler
+      </button>
+      <button (click)="profileDialogVisible.set(false)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition">
+        Mettre à jour
+      </button>
+    </div>
+  </app-dialog>
+
+  <!-- Dialog Aide -->
+  <app-dialog [(visible)]="helpDialogVisible" [cardClass]="'w-[650px]'">
+    <div dialog-header class="px-6 py-4 border-b border-gray-200 bg-white">
+      <h2 class="text-xl font-bold text-gray-900">Aide & Support</h2>
+    </div>
+
+    <div class="px-6 py-6 space-y-4">
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div class="flex items-start space-x-3">
+          <i class="fas fa-info-circle text-blue-600 text-xl mt-0.5" aria-hidden="true"></i>
+          <div>
+            <h3 class="text-sm font-semibold text-blue-900 mb-1">Bienvenue sur ChatApp</h3>
+            <p class="text-sm text-blue-800">Utilisez les modes de chat pour différents types de conversations.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <h3 class="text-sm font-semibold text-gray-900">Questions fréquentes</h3>
+
+        <div class="space-y-2">
+          <details class="group">
+            <summary class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900 flex items-center justify-between p-2 hover:bg-gray-50 rounded">
+              <span>Comment créer une nouvelle conversation ?</span>
+              <i class="fas fa-chevron-down group-open:rotate-180 transition-transform text-xs" aria-hidden="true"></i>
+            </summary>
+            <p class="text-sm text-gray-600 mt-2 pl-2">Cliquez sur le bouton "Nouveau Chat" dans la sidebar ou utilisez le raccourci Ctrl+N.</p>
+          </details>
+
+          <details class="group">
+            <summary class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900 flex items-center justify-between p-2 hover:bg-gray-50 rounded">
+              <span>Qu'est-ce que le mode RAG ?</span>
+              <i class="fas fa-chevron-down group-open:rotate-180 transition-transform text-xs" aria-hidden="true"></i>
+            </summary>
+            <p class="text-sm text-gray-600 mt-2 pl-2">Le mode RAG permet d'interroger vos documents personnels pour des réponses basées sur vos données.</p>
+          </details>
+
+          <details class="group">
+            <summary class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900 flex items-center justify-between p-2 hover:bg-gray-50 rounded">
+              <span>Comment contacter le support ?</span>
+              <i class="fas fa-chevron-down group-open:rotate-180 transition-transform text-xs" aria-hidden="true"></i>
+            </summary>
+            <p class="text-sm text-gray-600 mt-2 pl-2">Envoyez un email à support&#64;chatapp.com ou utilisez le chat en direct.</p>
+          </details>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-gray-200">
+        <p class="text-xs text-gray-500 text-center">Version 1.0.0</p>
+      </div>
+    </div>
+
+    <div dialog-footer class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end">
+      <button (click)="helpDialogVisible.set(false)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition">
+        Fermer
+      </button>
+    </div>
+  </app-dialog>
 </div>

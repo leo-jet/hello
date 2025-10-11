@@ -9,10 +9,16 @@ import { SidebarComponent } from '../../components/sidebar/sidebar/sidebar.compo
 import { HeaderComponent } from '../../components/header/header.component';
 import { OverlayComponent } from '../../components/overlay/overlay.component';
 import { ListComponent } from '../../components/list/list.component';
+import { ListItemComponent } from '../../components/list-item/list-item.component';
+import { ListItemSectionComponent } from '../../components/list-item-section/list-item-section.component';
+import { ListItemLabelComponent } from '../../components/list-item-label/list-item-label.component';
 
 // Import des sous-composants du main-layout
 import { MainSidebarNavigationComponent } from './main-sidebar-navigation/main-sidebar-navigation.component';
 import { MainConversationItemComponent } from './main-conversation-item/main-conversation-item.component';
+
+// Import du Dialog
+import { DialogComponent } from '../../components/dialog/dialog.component';
 
 // Interface pour les modèles AI
 interface AIModel {
@@ -33,8 +39,12 @@ interface AIModel {
     HeaderComponent,
     OverlayComponent,
     ListComponent,
+    ListItemComponent,
+    ListItemSectionComponent,
+    ListItemLabelComponent,
     MainSidebarNavigationComponent,
-    MainConversationItemComponent
+    MainConversationItemComponent,
+    DialogComponent
   ],
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.css'],
@@ -45,6 +55,11 @@ export class MainLayoutComponent implements AfterContentInit {
 
   // État de la sidebar
   sidebarOpen = signal(false);
+
+  // États des dialogs
+  settingsDialogVisible = signal(false);
+  profileDialogVisible = signal(false);
+  helpDialogVisible = signal(false);
 
   // Route actuelle
   currentRoute = signal<string>('');
@@ -547,5 +562,26 @@ export class MainLayoutComponent implements AfterContentInit {
     this.sidebarOpen.set(false);
     // Naviguer vers /docs
     this.router.navigate(['/docs']);
+  }
+
+  /**
+   * Ouvrir le dialog des paramètres
+   */
+  openSettingsDialog(): void {
+    this.settingsDialogVisible.set(true);
+  }
+
+  /**
+   * Ouvrir le dialog du profil
+   */
+  openProfileDialog(): void {
+    this.profileDialogVisible.set(true);
+  }
+
+  /**
+   * Ouvrir le dialog d'aide
+   */
+  openHelpDialog(): void {
+    this.helpDialogVisible.set(true);
   }
 }
