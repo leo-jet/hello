@@ -3,7 +3,7 @@
   <div class="h-full px-4 flex items-center justify-between">
     <!-- Section gauche avec toggle et titre -->
     <div class="flex items-center space-x-4">
-      <button 
+      <button
         *ngIf="showToggleButton"
         (click)="onToggle()"
         class="md:hidden p-2 rounded hover:bg-gray-100 hover:scale-105 transition-all text-gray-600">
@@ -12,28 +12,18 @@
       <h1 *ngIf="title" class="text-xl font-semibold text-gray-900 md:hidden">{{ title }}</h1>
       <ng-content select="[slot=left]"></ng-content>
     </div>
-    
+
     <!-- Section centrale -->
     <div class="flex-1 flex justify-center">
       <ng-content select="[slot=center]"></ng-content>
     </div>
-    
+
     <!-- Section droite avec contenu personnalisé et actions -->
     <div class="flex items-center space-x-4">
       <ng-content select="[slot=right]"></ng-content>
-      
+
       <!-- Actions par défaut -->
       <div class="flex items-center space-x-2">
-        <button 
-          *ngIf="showNotificationButton"
-          class="p-2 rounded hover:bg-gray-100 transition-colors text-gray-600 relative">
-          <i class="fas fa-bell text-lg" aria-hidden="true"></i>
-          <span *ngIf="notificationCount > 0" 
-            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
-            {{ notificationCount }}
-          </span>
-        </button>
-
         <ng-content select="[slot=actions]"></ng-content>
       </div>
     </div>

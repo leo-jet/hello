@@ -24,6 +24,11 @@ export const DOCS_ROUTES: Routes = [
         loadComponent: () => import('./select/select-docs.component').then(m => m.SelectDocsComponent),
         title: 'Select Documentation'
       },
+      {
+        path: 'dialog',
+        loadComponent: () => import('./dialog/dialog-docs.component').then(m => m.DialogDocsComponent),
+        title: 'Dialog Documentation'
+      },
   // you can add service/guide routes here if you create pages under docs/services or docs/guides
       {
         path: '',
@@ -72,6 +77,23 @@ export const DOCS_CONFIG = {
       status: 'stable',
       version: '1.0.0',
       features: ['Icon & image support', 'Smart positioning', 'Configurable classes', 'Return object or value']
+    },
+    {
+      name: 'DialogComponent',
+      path: 'dialog',
+      description: 'Boîte de dialogue modale complète avec alert, confirm, prompt et options',
+      status: 'stable',
+      version: '1.0.0',
+      features: [
+        'Alert, Confirm & Prompt',
+        'Radio, Checkbox & Toggle options',
+        'Multiple positions & animations',
+        'Persistent & seamless modes',
+        'Validation & async handlers',
+        '100% Tailwind CSS',
+        'Dark mode support',
+        'Responsive design'
+      ]
     }
     // Autres composants à documenter :
     // {

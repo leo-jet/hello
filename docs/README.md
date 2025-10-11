@@ -6,9 +6,20 @@ Bienvenue dans la documentation complète du Template Widget Angular. Cette docu
 
 ### Composants UI
 
-- **[DropdownComponent](/docs/dropdown)** - 🎯 **NOUVEAU** Documentation style Quasar avec démonstrations interactives
+- **[DialogComponent](/docs/dialog)** - 🎯 **NOUVEAU** Boîte de dialogue modale complète
+  - [📖 Documentation interactive](/docs/dialog) - Interface moderne avec exemples cliquables
+  - [📝 Quick Start](./dialog/DIALOG-QUICKSTART.md) - Démarrer en 5 minutes
+  - [📘 Documentation complète](./dialog/DIALOG-COMPONENT.md) - API et exemples détaillés
+  - [🎨 Architecture CSS](./dialog/TAILWIND-MIGRATION.md) - 100% Tailwind CSS
+
+- **[SelectComponent](/docs/select)** - Menu déroulant avec options personnalisables
+  - [📖 Documentation interactive](/docs/select) - Interface moderne sans code
+  - [📝 Guide](./select/select-docs.component.html) - Documentation complète
+
+- **[DropdownComponent](/docs/dropdown)** - Menu déroulant contextuel
   - [📖 Documentation complète](/docs/dropdown) - Interface moderne sans code
   - [📝 Guide markdown](./components/dropdown.md) - Documentation détaillée
+
 - [ButtonComponent](./components/button.md) *(à venir)*
 - [ModalComponent](./components/modal.md) *(à venir)*
 - [TooltipComponent](./components/tooltip.md) *(à venir)*

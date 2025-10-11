@@ -1,0 +1,467 @@
+<div class="w-full max-w-7xl mx-auto px-4 py-8">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900 mb-4 pb-3 border-b-2 border-blue-500">
+      Dialog Component
+    </h1>
+    <p class="text-base text-gray-600 leading-relaxed mb-4">
+      Composant <code class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-mono text-sm">app-dialog</code>
+      — une simple div modale personnalisable, utilisée directement dans vos templates.
+    </p>
+    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+      <p class="text-sm text-blue-800">
+        <strong>💡 Approche déclarative :</strong> Utilisez <code class="bg-blue-100 px-1.5 py-0.5 rounded">&lt;app-dialog&gt;</code>
+        directement dans votre template avec <code class="bg-blue-100 px-1.5 py-0.5 rounded">[(visible)]</code> pour le contrôle.
+      </p>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="mb-8">
+    <div class="flex items-center gap-2 bg-gray-100 p-1 rounded-lg w-fit">
+      <button
+        type="button"
+        (click)="setActiveTab('overview')"
+        [class]="activeTab() === 'overview'
+          ? 'bg-white text-gray-900 shadow-sm px-4 py-2.5 rounded-md font-semibold text-sm'
+          : 'text-gray-600 hover:text-gray-900 px-4 py-2.5 rounded-md font-medium text-sm'"
+      >
+        Vue d'ensemble
+      </button>
+      <button
+        type="button"
+        (click)="setActiveTab('api')"
+        [class]="activeTab() === 'api'
+          ? 'bg-white text-gray-900 shadow-sm px-4 py-2.5 rounded-md font-semibold text-sm'
+          : 'text-gray-600 hover:text-gray-900 px-4 py-2.5 rounded-md font-medium text-sm'"
+      >
+        API
+      </button>
+      <button
+        type="button"
+        (click)="setActiveTab('examples')"
+        [class]="activeTab() === 'examples'
+          ? 'bg-white text-gray-900 shadow-sm px-4 py-2.5 rounded-md font-semibold text-sm'
+          : 'text-gray-600 hover:text-gray-900 px-4 py-2.5 rounded-md font-medium text-sm'"
+      >
+        Exemples Live
+      </button>
+    </div>
+  </div>
+
+  <!-- Tab: Overview -->
+  @if (activeTab() === 'overview') {
+    <div class="space-y-6">
+
+      <!-- Usage -->
+      <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Utilisation basique</h3>
+        <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+          <pre class="text-xs font-mono whitespace-pre-wrap"><code>&lt;!-- Component TypeScript --&gt;
+dialogVisible = signal(false);
+
+openDialog() {{'{'}}
+  this.dialogVisible.set(true);
+{{'}'}}
+
+&lt;!-- Template HTML --&gt;
+&lt;button (click)="openDialog()"&gt;Ouvrir Dialog&lt;/button&gt;
+
+&lt;app-dialog [(visible)]="dialogVisible"&gt;
+  &lt;div dialog-header class="px-6 py-4 border-b"&gt;
+    &lt;h2 class="text-xl font-bold"&gt;Mon Dialog&lt;/h2&gt;
+  &lt;/div&gt;
+
+  &lt;div class="px-6 py-6"&gt;
+    &lt;p&gt;Contenu du dialog&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;div dialog-footer class="px-6 py-4 border-t flex justify-end gap-2"&gt;
+    &lt;button (click)="dialogVisible.set(false)"&gt;Fermer&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/app-dialog&gt;</code></pre>
+        </div>
+      </div>
+
+      <!-- Structure -->
+      <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Structure des 3 slots</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-blue-50 p-4 rounded-lg">
+            <code class="text-blue-700 font-mono text-xs font-semibold">[dialog-header]</code>
+            <p class="text-xs text-gray-700 mt-2">En-tête fixe, ne scrolle pas</p>
+          </div>
+          <div class="bg-green-50 p-4 rounded-lg">
+            <code class="text-green-700 font-mono text-xs font-semibold">(default)</code>
+            <p class="text-xs text-gray-700 mt-2">Contenu principal scrollable</p>
+          </div>
+          <div class="bg-purple-50 p-4 rounded-lg">
+            <code class="text-purple-700 font-mono text-xs font-semibold">[dialog-footer]</code>
+            <p class="text-xs text-gray-700 mt-2">Footer fixe, ne scrolle pas</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features -->
+      <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Fonctionnalités</h3>
+        <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <li class="flex items-start">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-600 mt-2 mr-3"></span>
+            <span class="text-sm text-gray-700"><strong>Two-way binding</strong> : [(visible)]</span>
+          </li>
+          <li class="flex items-start">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-600 mt-2 mr-3"></span>
+            <span class="text-sm text-gray-700"><strong>3 slots</strong> : header, content, footer</span>
+          </li>
+          <li class="flex items-start">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-600 mt-2 mr-3"></span>
+            <span class="text-sm text-gray-700"><strong>Auto-fit écran</strong> : max-h-90vh, toujours visible</span>
+          </li>
+          <li class="flex items-start">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-600 mt-2 mr-3"></span>
+            <span class="text-sm text-gray-700"><strong>6 animations</strong> : scale, fade, slide-*</span>
+          </li>
+          <li class="flex items-start">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-600 mt-2 mr-3"></span>
+            <span class="text-sm text-gray-700"><strong>5 positions</strong> : standard, top, bottom, left, right</span>
+          </li>
+          <li class="flex items-start">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-600 mt-2 mr-3"></span>
+            <span class="text-sm text-gray-700"><strong>Mode persistent</strong> : empêche fermeture externe</span>
+          </li>
+          <li class="flex items-start">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-600 mt-2 mr-3"></span>
+            <span class="text-sm text-gray-700"><strong>100% Tailwind</strong> : pas de CSS custom</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  }
+
+  <!-- Tab: API -->
+  @if (activeTab() === 'api') {
+    <div class="space-y-6">
+
+      <!-- Inputs -->
+      <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Inputs & Outputs</h3>
+        <div class="space-y-3">
+
+          <div class="bg-gray-50 p-3 rounded">
+            <code class="text-sm text-blue-700 font-mono font-semibold">[(visible)]: boolean</code>
+            <p class="text-sm text-gray-700 mt-1">Two-way binding pour contrôler la visibilité</p>
+          </div>
+
+          <div class="bg-gray-50 p-3 rounded">
+            <code class="text-sm text-blue-700 font-mono font-semibold">[position]: 'standard' | 'top' | 'bottom' | 'left' | 'right'</code>
+            <p class="text-sm text-gray-700 mt-1">Position du dialog</p>
+          </div>
+
+          <div class="bg-gray-50 p-3 rounded">
+            <code class="text-sm text-blue-700 font-mono font-semibold">[transitionShow]: 'scale' | 'fade' | 'slide-up' | 'slide-down' | 'slide-left' | 'slide-right'</code>
+            <p class="text-sm text-gray-700 mt-1">Animation d'apparition</p>
+          </div>
+
+          <div class="bg-gray-50 p-3 rounded">
+            <code class="text-sm text-blue-700 font-mono font-semibold">[persistent]: boolean</code>
+            <p class="text-sm text-gray-700 mt-1">Empêche fermeture par clic backdrop ou Escape</p>
+          </div>
+
+          <div class="bg-gray-50 p-3 rounded">
+            <code class="text-sm text-blue-700 font-mono font-semibold">[seamless]: boolean</code>
+            <p class="text-sm text-gray-700 mt-1">Pas de backdrop (transparent)</p>
+          </div>
+
+          <div class="bg-gray-50 p-3 rounded">
+            <code class="text-sm text-blue-700 font-mono font-semibold">[maximized]: boolean</code>
+            <p class="text-sm text-gray-700 mt-1">Plein écran</p>
+          </div>
+
+          <div class="bg-gray-50 p-3 rounded">
+            <code class="text-sm text-blue-700 font-mono font-semibold">[fullWidth]: boolean</code>
+            <p class="text-sm text-gray-700 mt-1">Toute la largeur</p>
+          </div>
+
+          <div class="bg-gray-50 p-3 rounded">
+            <code class="text-sm text-blue-700 font-mono font-semibold">[cardClass]: string</code>
+            <p class="text-sm text-gray-700 mt-1">Classes Tailwind personnalisées (ex: 'w-[800px]')</p>
+          </div>
+
+          <div class="bg-gray-50 p-3 rounded">
+            <code class="text-sm text-blue-700 font-mono font-semibold">(show): void</code>
+            <p class="text-sm text-gray-700 mt-1">Event émis quand le dialog s'affiche</p>
+          </div>
+
+          <div class="bg-gray-50 p-3 rounded">
+            <code class="text-sm text-blue-700 font-mono font-semibold">(hide): void</code>
+            <p class="text-sm text-gray-700 mt-1">Event émis quand le dialog se ferme</p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Example Code -->
+      <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Exemple complet</h3>
+        <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+          <pre class="text-xs font-mono whitespace-pre-wrap"><code>&lt;app-dialog
+  [(visible)]="myDialog"
+  [position]="'top'"
+  [transitionShow]="'slide-down'"
+  [persistent]="true"
+  [cardClass]="'w-[600px]'"
+  (show)="onDialogShow()"
+  (hide)="onDialogHide()"
+&gt;
+  &lt;!-- Contenu --&gt;
+&lt;/app-dialog&gt;</code></pre>
+        </div>
+      </div>
+
+    </div>
+  }
+
+  <!-- Tab: Examples Live -->
+  @if (activeTab() === 'examples') {
+    <div class="space-y-6">
+
+      <!-- Basic -->
+      <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Exemples de base</h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <button (click)="simpleDialogVisible.set(true)" class="px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+            Simple
+          </button>
+          <button (click)="headerFooterDialogVisible.set(true)" class="px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+            Header/Footer
+          </button>
+          <button (click)="scrollableDialogVisible.set(true)" class="px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+            Scrollable
+          </button>
+        </div>
+      </div>
+
+      <!-- Animations -->
+      <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Animations</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <button (click)="scaleDialogVisible.set(true)" class="px-4 py-3 bg-purple-500 text-white rounded-md hover:bg-purple-600">
+            Scale
+          </button>
+          <button (click)="fadeDialogVisible.set(true)" class="px-4 py-3 bg-purple-500 text-white rounded-md hover:bg-purple-600">
+            Fade
+          </button>
+          <button (click)="slideUpDialogVisible.set(true)" class="px-4 py-3 bg-purple-500 text-white rounded-md hover:bg-purple-600">
+            Slide Up
+          </button>
+          <button (click)="slideDownDialogVisible.set(true)" class="px-4 py-3 bg-purple-500 text-white rounded-md hover:bg-purple-600">
+            Slide Down
+          </button>
+        </div>
+      </div>
+
+      <!-- Positions -->
+      <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Positions</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <button (click)="topDialogVisible.set(true)" class="px-4 py-3 bg-green-500 text-white rounded-md hover:bg-green-600">
+            Top
+          </button>
+          <button (click)="bottomDialogVisible.set(true)" class="px-4 py-3 bg-green-500 text-white rounded-md hover:bg-green-600">
+            Bottom
+          </button>
+          <button (click)="leftDialogVisible.set(true)" class="px-4 py-3 bg-green-500 text-white rounded-md hover:bg-green-600">
+            Left
+          </button>
+          <button (click)="rightDialogVisible.set(true)" class="px-4 py-3 bg-green-500 text-white rounded-md hover:bg-green-600">
+            Right
+          </button>
+        </div>
+      </div>
+
+      <!-- Special -->
+      <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Modes spéciaux</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <button (click)="persistentDialogVisible.set(true)" class="px-4 py-3  bg-yellow-500">
+            Persistent
+          </button>
+          <button (click)="seamlessDialogVisible.set(true)" class="px-4 py-3 rounded-md hover:bg-orange-600">
+            Seamless
+          </button>
+          <button (click)="maximizedDialogVisible.set(true)" class="px-4 py-3  rounded-md hover:bg-orange-600">
+            Maximized
+          </button>
+          <button (click)="fullWidthDialogVisible.set(true)" class="px-4 py-3 rounded-md hover:bg-orange-600">
+            Full Width
+          </button>
+        </div>
+      </div>
+
+    </div>
+  }
+
+</div>
+
+<!-- Dialog Instances -->
+<!-- Simple -->
+<app-dialog [(visible)]="simpleDialogVisible" [cardClass]="'w-[500px]'">
+  <div class="p-6">
+    <p class="text-gray-700">Un dialog simple sans header ni footer</p>
+  </div>
+</app-dialog>
+
+<!-- Header/Footer -->
+<app-dialog [(visible)]="headerFooterDialogVisible" [cardClass]="'w-[600px]'">
+  <div dialog-header class="px-6 py-4 border-b border-gray-200">
+    <h2 class="text-xl font-bold text-gray-900">Dialog avec Header/Footer</h2>
+  </div>
+  <div class="px-6 py-6">
+    <p class="text-gray-700">Contenu principal du dialog</p>
+  </div>
+  <div dialog-footer class="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
+    <button (click)="headerFooterDialogVisible.set(false)" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
+      Fermer
+    </button>
+  </div>
+</app-dialog>
+
+<!-- Scrollable -->
+<app-dialog [(visible)]="scrollableDialogVisible" [cardClass]="'w-[700px] max-h-[70vh]'">
+  <div dialog-header class="px-6 py-4 border-b border-gray-200 bg-white">
+    <h2 class="text-xl font-bold text-gray-900">Contenu Long</h2>
+  </div>
+  <div class="px-6 py-6 space-y-4">
+    @for (i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14]; track i) {
+      <p class="text-gray-700">Paragraphe {{i}} - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.</p>
+    }
+  </div>
+  <div dialog-footer class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+    <button (click)="scrollableDialogVisible.set(false)" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+      OK
+    </button>
+  </div>
+</app-dialog>
+
+<!-- Scale Animation -->
+<app-dialog [(visible)]="scaleDialogVisible" [transitionShow]="'scale'" [cardClass]="'w-[500px]'">
+  <div class="p-6">
+    <h3 class="text-lg font-bold mb-2">Animation Scale</h3>
+    <p class="text-gray-700">Le dialog apparaît avec un effet de zoom</p>
+    <button (click)="scaleDialogVisible.set(false)" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded">Fermer</button>
+  </div>
+</app-dialog>
+
+<!-- Fade Animation -->
+<app-dialog [(visible)]="fadeDialogVisible" [transitionShow]="'fade'" [cardClass]="'w-[500px]'">
+  <div class="p-6">
+    <h3 class="text-lg font-bold mb-2">Animation Fade</h3>
+    <p class="text-gray-700">Le dialog apparaît en fondu</p>
+    <button (click)="fadeDialogVisible.set(false)" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded">Fermer</button>
+  </div>
+</app-dialog>
+
+<!-- Slide Up -->
+<app-dialog [(visible)]="slideUpDialogVisible" [transitionShow]="'slide-up'" [cardClass]="'w-[500px]'">
+  <div class="p-6">
+    <h3 class="text-lg font-bold mb-2">Animation Slide Up</h3>
+    <p class="text-gray-700">Le dialog glisse depuis le bas</p>
+    <button (click)="slideUpDialogVisible.set(false)" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded">Fermer</button>
+  </div>
+</app-dialog>
+
+<!-- Slide Down -->
+<app-dialog [(visible)]="slideDownDialogVisible" [transitionShow]="'slide-down'" [cardClass]="'w-[500px]'">
+  <div class="p-6">
+    <h3 class="text-lg font-bold mb-2">Animation Slide Down</h3>
+    <p class="text-gray-700">Le dialog glisse depuis le haut</p>
+    <button (click)="slideDownDialogVisible.set(false)" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded">Fermer</button>
+  </div>
+</app-dialog>
+
+<!-- Top Position -->
+<app-dialog [(visible)]="topDialogVisible" [position]="'top'" [cardClass]="'w-[500px]'">
+  <div class="p-6">
+    <h3 class="text-lg font-bold mb-2">Position Top</h3>
+    <p class="text-gray-700">Le dialog est aligné en haut</p>
+    <button (click)="topDialogVisible.set(false)" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded">Fermer</button>
+  </div>
+</app-dialog>
+
+<!-- Bottom Position -->
+<app-dialog [(visible)]="bottomDialogVisible" [position]="'bottom'" [cardClass]="'w-[500px]'">
+  <div class="p-6">
+    <h3 class="text-lg font-bold mb-2">Position Bottom</h3>
+    <p class="text-gray-700">Le dialog est aligné en bas</p>
+    <button (click)="bottomDialogVisible.set(false)" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded">Fermer</button>
+  </div>
+</app-dialog>
+
+<!-- Left Position -->
+<app-dialog [(visible)]="leftDialogVisible" [position]="'left'" [cardClass]="'w-[400px] h-full'">
+  <div class="p-6">
+    <h3 class="text-lg font-bold mb-2">Position Left</h3>
+    <p class="text-gray-700">Panneau latéral gauche</p>
+    <button (click)="leftDialogVisible.set(false)" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded">Fermer</button>
+  </div>
+</app-dialog>
+
+<!-- Right Position -->
+<app-dialog [(visible)]="rightDialogVisible" [position]="'right'" [cardClass]="'w-[400px] h-full'">
+  <div class="p-6">
+    <h3 class="text-lg font-bold mb-2">Position Right</h3>
+    <p class="text-gray-700">Panneau latéral droit</p>
+    <button (click)="rightDialogVisible.set(false)" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded">Fermer</button>
+  </div>
+</app-dialog>
+
+<!-- Persistent -->
+<app-dialog [(visible)]="persistentDialogVisible" [persistent]="true" [cardClass]="'w-[500px]'">
+  <div class="p-6">
+    <h3 class="text-lg font-bold mb-2">Dialog Persistent</h3>
+    <p class="text-gray-700 mb-3">Cliquer en dehors ne ferme pas le dialog</p>
+    <div class="px-6 py-6 space-y-4">
+    @for (i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,1,2,3,4,5,6,7,8,9,10,11,12,13,14]; track i) {
+      <p class="text-gray-700">Paragraphe {{i}} - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.</p>
+    }
+  </div>
+    <button (click)="persistentDialogVisible.set(false)" class="px-4 py-2 bg-blue-600 text-white rounded">Fermer</button>
+  </div>
+</app-dialog>
+
+<!-- Seamless -->
+<app-dialog [(visible)]="seamlessDialogVisible" [seamless]="true" [cardClass]="'w-[500px]'">
+  <div class="p-6 bg-white shadow-2xl rounded-lg">
+    <h3 class="text-lg font-bold mb-2">Dialog Seamless</h3>
+    <p class="text-gray-700">Pas de backdrop (fond transparent)</p>
+    <button (click)="seamlessDialogVisible.set(false)" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded">Fermer</button>
+  </div>
+</app-dialog>
+
+<!-- Maximized -->
+<app-dialog [(visible)]="maximizedDialogVisible" [maximized]="true">
+  <div dialog-header class="px-6 py-4 border-b border-gray-200">
+    <h2 class="text-xl font-bold">Dialog Plein Écran</h2>
+  </div>
+  <div class="px-6 py-6">
+    <p class="text-gray-700">Le dialog occupe tout l'écran</p>
+  </div>
+  <div dialog-footer class="px-6 py-4 border-t border-gray-200">
+    <button (click)="maximizedDialogVisible.set(false)" class="px-4 py-2 bg-blue-600 text-white rounded">Fermer</button>
+  </div>
+</app-dialog>
+
+<!-- Full Width -->
+<app-dialog [(visible)]="fullWidthDialogVisible" [fullWidth]="true" [cardClass]="'max-h-[80vh]'">
+  <div dialog-header class="px-6 py-4 border-b border-gray-200">
+    <h2 class="text-xl font-bold">Dialog Pleine Largeur</h2>
+  </div>
+  <div class="px-6 py-6">
+    <p class="text-gray-700">Le dialog prend toute la largeur de l'écran</p>
+  </div>
+  <div dialog-footer class="px-6 py-4 border-t border-gray-200">
+    <button (click)="fullWidthDialogVisible.set(false)" class="px-4 py-2 bg-blue-600 text-white rounded">Fermer</button>
+  </div>
+</app-dialog>

@@ -1,0 +1,40 @@
+<!-- Simple Modal Dialog -->
+@if (visible()) {
+  <div
+    [class]="dialogClasses()"
+    [style]="style()"
+    (keydown)="onKeydown($event)"
+    tabindex="-1"
+  >
+    <!-- Backdrop -->
+    <div
+      [class]="backdropClasses()"
+      [style]="backdropStyle()"
+      (click)="onBackdropClick($event)"
+      [attr.aria-hidden]="true"
+    ></div>
+
+    <!-- Dialog Content Container -->
+    <div
+      [class]="cardClasses() + ' ' + transitionClass()"
+      [style]="cardStyle()"
+      role="dialog"
+      [attr.aria-modal]="true"
+    >
+      <!-- Fixed Header -->
+      <div class="shrink-0">
+        <ng-content select="[dialog-header]"></ng-content>
+      </div>
+
+      <!-- Scrollable Content -->
+      <div class="flex-1 overflow-y-auto min-h-0">
+        <ng-content></ng-content>
+      </div>
+
+      <!-- Fixed Footer -->
+      <div class="shrink-0">
+        <ng-content select="[dialog-footer]"></ng-content>
+      </div>
+    </div>
+  </div>
+}
