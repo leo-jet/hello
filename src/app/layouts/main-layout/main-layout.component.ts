@@ -247,62 +247,6 @@ export class MainLayoutComponent implements AfterContentInit {
       lastMessage: 'Nouvelles idées interessantes',
       timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
       unreadCount: 1
-    },
-    {
-      id: '1',
-      title: 'Discussion sur Angular 19',
-      lastMessage: 'Comment implémenter les signals ?',
-      timestamp: new Date(Date.now() - 30 * 60 * 1000), // 30 min ago
-      unreadCount: 2
-    },
-    {
-      id: '2',
-      title: 'Projet Template Widget',
-      lastMessage: 'La sidebar est presque terminée',
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2h ago
-      unreadCount: 0
-    },
-    {
-      id: '3',
-      title: 'Aide sur TypeScript',
-      lastMessage: 'Merci pour l\'explication !',
-      timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000), // 5h ago
-      unreadCount: 1
-    },
-    {
-      id: '4',
-      title: 'Optimisation Performance',
-      lastMessage: 'OnPush change detection...',
-      timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
-      unreadCount: 0
-    },
-    {
-      id: '5',
-      title: 'Questions CSS',
-      lastMessage: 'Tailwind vs CSS modules ?',
-      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-      unreadCount: 3
-    },
-    {
-      id: '6',
-      title: 'Déploiement Azure',
-      lastMessage: 'Configuration des pipelines',
-      timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
-      unreadCount: 0
-    },
-    {
-      id: '7',
-      title: 'Révision de code',
-      lastMessage: 'PR approuvée ✅',
-      timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
-      unreadCount: 0
-    },
-    {
-      id: '8',
-      title: 'Brainstorming Features',
-      lastMessage: 'Nouvelles idées interessantes',
-      timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
-      unreadCount: 1
     }
   ];
 

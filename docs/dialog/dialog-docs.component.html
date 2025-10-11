@@ -423,7 +423,7 @@ openDialog() {{'{'}}
     <h3 class="text-lg font-bold mb-2">Dialog Persistent</h3>
     <p class="text-gray-700 mb-3">Cliquer en dehors ne ferme pas le dialog</p>
     <div class="px-6 py-6 space-y-4">
-    @for (i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,1,2,3,4,5,6,7,8,9,10,11,12,13,14]; track i) {
+    @for (i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,1,2,3,4,5,6,7,8,9,10,11,12,13,14]; track $index) {
       <p class="text-gray-700">Paragraphe {{i}} - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.</p>
     }
   </div>

@@ -1,6 +1,8 @@
-﻿import { Component, signal, computed } from '@angular/core';
+﻿import { Component, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs/operators';
 import { ChatModeService } from '../../services/chat-mode.service';
 import { MainLayoutComponent } from '../main-layout/main-layout.component';
 import { MainChatInputComponent } from '../main-layout/main-chat-input/main-chat-input.component';
@@ -23,7 +25,31 @@ interface AIModel {
 export class ChatLayoutComponent {
   messageValue = signal<string>('');
 
-  constructor(private chatModeService: ChatModeService, private router: Router) {}
+  // Sera initialisé dans le constructeur
+  chatId;
+
+  constructor(
+    private chatModeService: ChatModeService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+    // Initialisation du signal après l'injection de route
+    this.chatId = toSignal(
+      this.route.paramMap.pipe(
+        map(params => params.get('id'))
+      )
+    );
+
+    // Effect pour réagir aux changements de l'id
+    effect(() => {
+      const id = this.chatId();
+      if (id) {
+        console.log('Chat ID changé:', id);
+        // Ici vous pouvez charger les données du chat, etc.
+        this.loadChatData(id);
+      }
+    });
+  }
 
   currentChatModeInfo = computed(() => this.chatModeService.getCurrentModeInfo());
 
@@ -68,5 +94,11 @@ export class ChatLayoutComponent {
       console.log('Message:', this.messageValue());
       this.messageValue.set('');
     }
+  }
+
+  // Méthode pour charger les données du chat quand l'id change
+  private loadChatData(id: string): void {
+    console.log('Chargement des données pour le chat:', id);
+    // Implémentez ici la logique de chargement des messages, etc.
   }
 }
