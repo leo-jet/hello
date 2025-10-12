@@ -35,12 +35,20 @@
       </div>
 
       <app-list>
-        @for (conversation of chatStore.conversations(); track conversation.id) {
-          <app-main-conversation-item
-            [conversation]="conversation"
-            (conversationClick)="navigateToChat($event.id)"
-            (deleteClick)="handleDeleteConversation($event)"
-          />
+        @if (chatStore.conversations().length === 0) {
+          <div class="text-center py-8 px-4">
+            <i class="fas fa-comments text-4xl text-gray-300 mb-3"></i>
+            <p class="text-sm text-gray-500">Aucune conversation</p>
+            <p class="text-xs text-gray-400 mt-1">Créez une nouvelle conversation pour commencer</p>
+          </div>
+        } @else {
+          @for (conversation of chatStore.conversations(); track conversation.id) {
+            <app-main-conversation-item
+              [conversation]="conversation"
+              (conversationClick)="navigateToChat($event.id)"
+              (deleteClick)="handleDeleteConversation($event)"
+            />
+          }
         }
       </app-list>
     </div>
