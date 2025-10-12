@@ -1,9 +1,9 @@
 import { computed, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { pipe, switchMap, tap } from 'rxjs';
+import { pipe, switchMap, tap, from } from 'rxjs';
 import { LlmModel } from '@app/models';
+import { ChatModeService } from '@app/services/chat-mode.service';
 
 /**
  * Interface pour une conversation
@@ -45,14 +45,14 @@ export const ChatStore = signalStore(
   })),
 
   // Méthodes
-  withMethods((store, http = inject(HttpClient)) => ({
+  withMethods((store, chatModeService = inject(ChatModeService)) => ({
     /**
-     * Charger les modèles depuis l'API
+     * Charger les modèles depuis l'API via ChatModeService
      */
     loadModels: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { isLoading: true })),
-        switchMap(() => http.get<LlmModel[]>('/api/llm-models')),
+        switchMap(() => from(chatModeService.loadLlmModels())),
         tap({
           next: (models) => {
             const selectedModel = store.selectedModel() || models.find(m => m.isAvailable) || null;
