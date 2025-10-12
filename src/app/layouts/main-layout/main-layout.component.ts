@@ -32,8 +32,11 @@ import { ListItemLabelComponent } from '../../components/list-item-label/list-it
 import { MainSidebarNavigationComponent } from './main-sidebar-navigation/main-sidebar-navigation.component';
 import { MainConversationItemComponent } from './main-conversation-item/main-conversation-item.component';
 
-// Import du Dialog
-import { DialogComponent } from '../../components/dialog/dialog.component';
+// Import des dialogs
+import { SettingsDialogComponent } from './dialogs/settings-dialog/settings-dialog.component';
+import { ProfileDialogComponent } from './dialogs/profile-dialog/profile-dialog.component';
+import { HelpDialogComponent } from './dialogs/help-dialog/help-dialog.component';
+
 import { ChatStore } from '../../stores/chat.store';
 
 @Component({
@@ -51,7 +54,9 @@ import { ChatStore } from '../../stores/chat.store';
     ListItemLabelComponent,
     MainSidebarNavigationComponent,
     MainConversationItemComponent,
-    DialogComponent,
+    SettingsDialogComponent,
+    ProfileDialogComponent,
+    HelpDialogComponent,
   ],
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.css'],

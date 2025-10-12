@@ -32,9 +32,6 @@
         <h3 class="text-xs font-semibold text-gray-500 uppercase">
           Conversations
         </h3>
-        <button class="p-1 rounded hover:bg-gray-100 text-gray-600">
-          <i class="fas fa-plus text-xs" aria-hidden="true"></i>
-        </button>
       </div>
 
       <app-list>
@@ -95,7 +92,7 @@
       (toggleEvent)="toggleSidebar()"
     >
       <!-- Contenu header personnalisé -->
-      <div slot="right">
+      <div slot="left">
         <ng-content select="[header]"> {{chatStore.selectedModel()?.name || 'Aucun modèle'}}</ng-content>
       </div>
 
@@ -119,151 +116,8 @@
   <app-overlay [show]="sidebarOpen()" (clickEvent)="closeSidebar()">
   </app-overlay>
 
-  <!-- Dialog Paramètres -->
-  <app-dialog [(visible)]="settingsDialogVisible" [cardClass]="'w-[600px]'">
-    <div dialog-header class="px-6 py-4 border-b border-gray-200 bg-white">
-      <h2 class="text-xl font-bold text-gray-900">Paramètres</h2>
-    </div>
-
-    <div class="px-6 py-6 space-y-4">
-      <div>
-        <h3 class="text-sm font-semibold text-gray-700 mb-2">Apparence</h3>
-        <div class="space-y-2">
-          <label class="flex items-center space-x-2">
-            <input type="checkbox" class="rounded border-gray-300">
-            <span class="text-sm text-gray-700">Mode sombre</span>
-          </label>
-          <label class="flex items-center space-x-2">
-            <input type="checkbox" class="rounded border-gray-300">
-            <span class="text-sm text-gray-700">Animations</span>
-          </label>
-        </div>
-      </div>
-
-      <div>
-        <h3 class="text-sm font-semibold text-gray-700 mb-2">Notifications</h3>
-        <div class="space-y-2">
-          <label class="flex items-center space-x-2">
-            <input type="checkbox" class="rounded border-gray-300" checked>
-            <span class="text-sm text-gray-700">Notifications push</span>
-          </label>
-          <label class="flex items-center space-x-2">
-            <input type="checkbox" class="rounded border-gray-300">
-            <span class="text-sm text-gray-700">Sons</span>
-          </label>
-        </div>
-      </div>
-    </div>
-
-    <div dialog-footer class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-2">
-      <button (click)="settingsDialogVisible.set(false)" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded transition">
-        Annuler
-      </button>
-      <button (click)="settingsDialogVisible.set(false)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition">
-        Enregistrer
-      </button>
-    </div>
-  </app-dialog>
-
-  <!-- Dialog Profil -->
-  <app-dialog [(visible)]="profileDialogVisible" [cardClass]="'w-[500px]'">
-    <div dialog-header class="px-6 py-4 border-b border-gray-200 bg-white">
-      <h2 class="text-xl font-bold text-gray-900">Mon Profil</h2>
-    </div>
-
-    <div class="px-6 py-6 space-y-4">
-      <!-- Avatar -->
-      <div class="flex justify-center">
-        <div class="w-20 h-20 bg-purple-500 rounded-full flex items-center justify-center">
-          <span class="text-white font-medium text-2xl">EU</span>
-        </div>
-      </div>
-
-      <!-- Informations -->
-      <div class="space-y-3">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
-          <input type="text" value="Emman Utilisateur" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-          <input type="email" value="emmanu@example.com" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Bio</label>
-          <textarea rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Parlez-nous de vous..."></textarea>
-        </div>
-      </div>
-    </div>
-
-    <div dialog-footer class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-2">
-      <button (click)="profileDialogVisible.set(false)" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded transition">
-        Annuler
-      </button>
-      <button (click)="profileDialogVisible.set(false)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition">
-        Mettre à jour
-      </button>
-    </div>
-  </app-dialog>
-
-  <!-- Dialog Aide -->
-  <app-dialog [(visible)]="helpDialogVisible" [cardClass]="'w-[650px]'">
-    <div dialog-header class="px-6 py-4 border-b border-gray-200 bg-white">
-      <h2 class="text-xl font-bold text-gray-900">Aide & Support</h2>
-    </div>
-
-    <div class="px-6 py-6 space-y-4">
-      <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <div class="flex items-start space-x-3">
-          <i class="fas fa-info-circle text-blue-600 text-xl mt-0.5" aria-hidden="true"></i>
-          <div>
-            <h3 class="text-sm font-semibold text-blue-900 mb-1">Bienvenue sur ChatApp</h3>
-            <p class="text-sm text-blue-800">Utilisez les modes de chat pour différents types de conversations.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="space-y-3">
-        <h3 class="text-sm font-semibold text-gray-900">Questions fréquentes</h3>
-
-        <div class="space-y-2">
-          <details class="group">
-            <summary class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900 flex items-center justify-between p-2 hover:bg-gray-50 rounded">
-              <span>Comment créer une nouvelle conversation ?</span>
-              <i class="fas fa-chevron-down group-open:rotate-180 transition-transform text-xs" aria-hidden="true"></i>
-            </summary>
-            <p class="text-sm text-gray-600 mt-2 pl-2">Cliquez sur le bouton "Nouveau Chat" dans la sidebar ou utilisez le raccourci Ctrl+N.</p>
-          </details>
-
-          <details class="group">
-            <summary class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900 flex items-center justify-between p-2 hover:bg-gray-50 rounded">
-              <span>Qu'est-ce que le mode RAG ?</span>
-              <i class="fas fa-chevron-down group-open:rotate-180 transition-transform text-xs" aria-hidden="true"></i>
-            </summary>
-            <p class="text-sm text-gray-600 mt-2 pl-2">Le mode RAG permet d'interroger vos documents personnels pour des réponses basées sur vos données.</p>
-          </details>
-
-          <details class="group">
-            <summary class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900 flex items-center justify-between p-2 hover:bg-gray-50 rounded">
-              <span>Comment contacter le support ?</span>
-              <i class="fas fa-chevron-down group-open:rotate-180 transition-transform text-xs" aria-hidden="true"></i>
-            </summary>
-            <p class="text-sm text-gray-600 mt-2 pl-2">Envoyez un email à support&#64;chatapp.com ou utilisez le chat en direct.</p>
-          </details>
-        </div>
-      </div>
-
-      <div class="pt-4 border-t border-gray-200">
-        <p class="text-xs text-gray-500 text-center">Version 1.0.0</p>
-      </div>
-    </div>
-
-    <div dialog-footer class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end">
-      <button (click)="helpDialogVisible.set(false)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition">
-        Fermer
-      </button>
-    </div>
-  </app-dialog>
+  <!-- Dialogs -->
+  <app-settings-dialog [(visible)]="settingsDialogVisible" />
+  <app-profile-dialog [(visible)]="profileDialogVisible" />
+  <app-help-dialog [(visible)]="helpDialogVisible" />
 </div>

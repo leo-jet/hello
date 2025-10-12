@@ -92,7 +92,6 @@ export class NewChatComponent implements OnInit {
    */
   onFooterInputChange(text: string): void {
     this.currentMessage.set(text);
-    console.log('Texte saisi:', text);
     // Activer/désactiver le bouton d'envoi selon le contenu
     this.isSendButtonDisabled = text.trim().length === 0;
   }

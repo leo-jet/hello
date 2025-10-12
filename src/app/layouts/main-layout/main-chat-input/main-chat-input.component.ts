@@ -58,7 +58,6 @@ export class MainChatInputComponent {
   }
 
   onModelSelect(model: any) {
-    console.log('Model selected:', model);
     this.modelSelect.emit(model as LlmModel);
   }
 
