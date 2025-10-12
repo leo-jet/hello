@@ -1,68 +1,78 @@
 <div class="flex flex-col items-center justify-start min-h-screen p-8 pt-20">
   <!-- Titre de la page -->
-  <div class="text-center mb-12">
+  <div class="text-center mb-8">
     <h1 class="text-4xl font-bold text-gray-900 mb-4">Nouveau Chat</h1>
-    <p class="text-lg text-gray-600">Démarrez une nouvelle conversation</p>
+    <p class="text-lg text-gray-600">
+      @if (!selectedSuggestion()) {
+        Choisissez un type de conversation pour commencer
+      } @else {
+        {{ selectedSuggestion()!.longDescription }}
+      }
+    </p>
   </div>
 
-  <!-- Suggestions -->
-  <div class="mb-8 w-full max-w-4xl">
-    <h2 class="text-sm font-semibold text-gray-500 uppercase mb-4">Suggestions</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <app-suggestion-card
-        title="Idées créatives"
-        description="Générer des idées pour un projet"
-        icon="fas fa-lightbulb"
-        iconColor="text-yellow-500"
-        hostClass="w-full"
-        (cardClick)="onSuggestionClick('creative')"
-      />
+  <!-- Grille de suggestions (avant sélection) -->
+  @if (!selectedSuggestion()) {
+    <div class="mb-8 w-full max-w-6xl">
+      <h2 class="text-sm font-semibold text-gray-500 uppercase mb-4 text-center">Suggestions</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        @for (suggestion of suggestions; track suggestion.mode) {
+          <app-suggestion-card
+            [title]="suggestion.shortDescription"
+            [description]="suggestion.longDescription"
+            [icon]="suggestion.icon"
+            [iconColor]="suggestion.iconColor"
+            hostClass="w-full cursor-pointer transform transition-transform duration-200 hover:scale-105"
+            (cardClick)="onSuggestionClick(suggestion.mode)"
+          />
+        }
+      </div>
+    </div>
+  } @else{
+    <!-- Badge avec bouton de changement -->
+    <div class="mb-6 flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-full border-2 border-blue-200 shadow-sm">
+      <i [class]="selectedSuggestion()!.icon + ' ' + selectedSuggestion()!.iconColor + ' text-xl'"></i>
+      <span class="font-semibold text-gray-800">{{ selectedSuggestion()!.shortDescription }}</span>
+      <div class="ml-2">
+        <app-button
+          [label]="'Changer'"
+          [icon]="'fas fa-exchange-alt'"
+          [variant]="'ghost'"
+          [size]="'sm'"
+          [ariaLabel]="'Changer de suggestion'"
+          (buttonClick)="resetSuggestion()"
+        />
+      </div>
+    </div>
 
+    <!-- Card de la suggestion sélectionnée -->
+    <div class="mb-8 w-full max-w-4xl flex justify-center">
       <app-suggestion-card
-        title="Aide au code"
-        description="Résoudre un problème de programmation"
-        icon="fas fa-code"
-        iconColor="text-blue-500"
-        hostClass="w-full"
-        (cardClick)="onSuggestionClick('code')"
-      />
-
-      <app-suggestion-card
-        title="Traduction"
-        description="Traduire un texte dans une autre langue"
-        icon="fas fa-language"
-        iconColor="text-green-500"
-        hostClass="w-full"
-        (cardClick)="onSuggestionClick('translation')"
-      />
-
-      <app-suggestion-card
-        title="Rédaction"
-        description="Écrire un article ou un email"
-        icon="fas fa-pen"
-        iconColor="text-purple-500"
-        hostClass="w-full"
-        (cardClick)="onSuggestionClick('writing')"
+        [title]="selectedSuggestion()!.shortDescription"
+        [description]="selectedSuggestion()!.longDescription"
+        [icon]="selectedSuggestion()!.icon"
+        [iconColor]="selectedSuggestion()!.iconColor"
+        hostClass="w-full max-w-sm"
       />
     </div>
-  </div>
 
-  <!-- Chat Input -->
-  <div class="w-full">
-    <app-main-chat-input
-      [currentChatModeInfo]="currentChatModeInfo()"
-      [chatModeSelectOptions]="chatModeSelectOptions"
-      [selectedChatMode]="selectedChatMode()"
-      [modelSelectOptions]="modelSelectOptions"
-      [selectedModel]="chatStore.selectedModel()"
-      [selectedReasoningLevel]="selectedReasoningLevel()"
-      [isSendButtonDisabled]="isSendButtonDisabled"
-      (chatModeSelect)="onChatModeSelect($event)"
-      (modelSelect)="onModelSelect($event)"
-      (reasoningLevelSelect)="onReasoningLevelSelect($event)"
-      (inputChange)="onFooterInputChange($event)"
-      (microphoneClick)="onMicrophoneClick()"
-      (sendMessage)="onSendMessage()"
-    />
-  </div>
+    <!-- Chat input -->
+    <div class="w-full max-w-4xl">
+      <app-main-chat-input
+        [currentChatModeInfo]="currentChatModeInfo()"
+        [chatModeSelectOptions]="chatModeSelectOptions"
+        [selectedChatMode]="selectedChatMode()"
+        [modelSelectOptions]="modelSelectOptions"
+        [selectedModel]="chatStore.selectedModel()"
+        [selectedReasoningLevel]="selectedReasoningLevel()"
+        [isSendButtonDisabled]="isSendButtonDisabled"
+        (chatModeSelect)="onChatModeSelect($event)"
+        (modelSelect)="onModelSelect($event)"
+        (reasoningLevelSelect)="onReasoningLevelSelect($event)"
+        (inputChange)="onFooterInputChange($event)"
+        (microphoneClick)="onMicrophoneClick()"
+        (sendMessage)="onSendMessage()"
+      />
+    </div>
+  }
 </div>

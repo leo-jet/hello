@@ -84,21 +84,23 @@
 
   <!-- Zone principale avec header et contenu -->
   <div class="flex-1 flex flex-col overflow-hidden md:ml-80 transition-all">
-    <!-- Header avec ng-content -->
-    <app-header
-      [title]="title"
-      [showNotificationButton]="true"
-      [notificationCount]="3"
-      (toggleEvent)="toggleSidebar()"
-    >
-      <!-- Contenu header personnalisé -->
-      <div slot="left">
-        <ng-content select="[header]"> {{chatStore.selectedModel()?.name || 'Aucun modèle'}}</ng-content>
-      </div>
+    <!-- Header avec ng-content (conditionnel) -->
+    @if (showHeader()) {
+      <app-header
+        [title]="title"
+        [showNotificationButton]="true"
+        [notificationCount]="3"
+        (toggleEvent)="toggleSidebar()"
+      >
+        <!-- Contenu header personnalisé -->
+        <div slot="left">
+          <ng-content select="[header]"> {{chatStore.selectedModel()?.name || 'Aucun modèle'}}</ng-content>
+        </div>
 
-      <!-- Actions additionnelles -->
+        <!-- Actions additionnelles -->
 
-    </app-header>
+      </app-header>
+    }
 
     <!-- Contenu principal -->
     <main class="flex-1 overflow-y-auto bg-gray-50">

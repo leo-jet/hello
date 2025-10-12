@@ -3,13 +3,24 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MainChatInputComponent, ChatModeInfo } from '../../layouts/main-layout/main-chat-input/main-chat-input.component';
 import { SuggestionCardComponent } from '../../components/suggestion-card/suggestion-card.component';
+import { ButtonComponent } from '../../components/button/button.component';
 import { ChatModeService, ChatMode } from '../../services/chat-mode.service';
 import { ChatStore } from '../../stores/chat.store';
+
+// Interface pour les suggestions
+interface Suggestion {
+  mode: string;
+  shortDescription: string;
+  longDescription: string;
+  canUpload: boolean;
+  icon: string;
+  iconColor: string;
+}
 
 @Component({
   selector: 'app-new-chat',
   standalone: true,
-  imports: [CommonModule, MainChatInputComponent, SuggestionCardComponent],
+  imports: [CommonModule, SuggestionCardComponent, MainChatInputComponent, ButtonComponent],
   templateUrl: './new-chat.component.html',
   styleUrl: './new-chat.component.css'
 })
@@ -26,6 +37,9 @@ export class NewChatComponent implements OnInit {
   // Message en cours de saisie
   currentMessage = signal<string>('');
 
+  // Suggestion sélectionnée
+  selectedSuggestion = signal<Suggestion | null>(null);
+
   // Niveau de raisonnement sélectionné
   selectedReasoningLevel = signal<'low' | 'medium' | 'high'>('medium');
 
@@ -37,6 +51,114 @@ export class NewChatComponent implements OnInit {
 
   // État du bouton d'envoi
   isSendButtonDisabled = false;
+
+  // Liste des suggestions
+  suggestions: Suggestion[] = [
+    {
+      mode: 'creative',
+      shortDescription: 'Idées créatives',
+      longDescription: 'Générer des idées innovantes pour un projet',
+      canUpload: false,
+      icon: 'fas fa-lightbulb',
+      iconColor: 'text-yellow-500'
+    },
+    {
+      mode: 'code',
+      shortDescription: 'Aide au code',
+      longDescription: 'Résoudre un problème de programmation',
+      canUpload: true,
+      icon: 'fas fa-code',
+      iconColor: 'text-blue-500'
+    },
+    {
+      mode: 'translation',
+      shortDescription: 'Traduction',
+      longDescription: 'Traduire un texte dans une autre langue',
+      canUpload: true,
+      icon: 'fas fa-language',
+      iconColor: 'text-green-500'
+    },
+    {
+      mode: 'writing',
+      shortDescription: 'Rédaction',
+      longDescription: 'Écrire un article ou un email professionnel',
+      canUpload: false,
+      icon: 'fas fa-pen',
+      iconColor: 'text-purple-500'
+    },
+    {
+      mode: 'analysis',
+      shortDescription: 'Analyse de données',
+      longDescription: 'Analyser et interpréter des données complexes',
+      canUpload: true,
+      icon: 'fas fa-chart-line',
+      iconColor: 'text-indigo-500'
+    },
+    {
+      mode: 'research',
+      shortDescription: 'Recherche',
+      longDescription: 'Rechercher des informations sur un sujet',
+      canUpload: false,
+      icon: 'fas fa-search',
+      iconColor: 'text-teal-500'
+    },
+    {
+      mode: 'summarize',
+      shortDescription: 'Résumé',
+      longDescription: 'Résumer un long document ou article',
+      canUpload: true,
+      icon: 'fas fa-file-alt',
+      iconColor: 'text-orange-500'
+    },
+    {
+      mode: 'brainstorm',
+      shortDescription: 'Brainstorming',
+      longDescription: 'Générer des idées pour résoudre un problème',
+      canUpload: false,
+      icon: 'fas fa-brain',
+      iconColor: 'text-pink-500'
+    },
+    {
+      mode: 'explain',
+      shortDescription: 'Explication',
+      longDescription: 'Expliquer un concept complexe simplement',
+      canUpload: false,
+      icon: 'fas fa-graduation-cap',
+      iconColor: 'text-cyan-500'
+    },
+    {
+      mode: 'debug',
+      shortDescription: 'Débogage',
+      longDescription: 'Identifier et corriger des bugs dans le code',
+      canUpload: true,
+      icon: 'fas fa-bug',
+      iconColor: 'text-red-500'
+    },
+    {
+      mode: 'optimize',
+      shortDescription: 'Optimisation',
+      longDescription: 'Améliorer les performances et la qualité',
+      canUpload: true,
+      icon: 'fas fa-tachometer-alt',
+      iconColor: 'text-emerald-500'
+    },
+    {
+      mode: 'design',
+      shortDescription: 'Design',
+      longDescription: 'Créer des concepts et maquettes visuelles',
+      canUpload: true,
+      icon: 'fas fa-palette',
+      iconColor: 'text-fuchsia-500'
+    },
+    {
+      mode: 'review',
+      shortDescription: 'Révision',
+      longDescription: 'Réviser et améliorer un texte existant',
+      canUpload: true,
+      icon: 'fas fa-check-double',
+      iconColor: 'text-lime-500'
+    }
+  ];
 
   // Modes de chat disponibles
   chatModes: Array<{ mode: ChatMode; info: ChatModeInfo }> = [
@@ -141,8 +263,24 @@ export class NewChatComponent implements OnInit {
   /**
    * Gérer le clic sur une carte de suggestion
    */
-  onSuggestionClick(suggestionType: string): void {
-    console.log('Suggestion cliquée:', suggestionType);
-    // TODO: Pré-remplir l'input avec un prompt suggéré selon le type
+  onSuggestionClick(suggestionMode: string): void {
+    const suggestion = this.suggestions.find(s => s.mode === suggestionMode);
+    if (suggestion) {
+      // Si on clique sur la même suggestion, on la désélectionne
+      if (this.selectedSuggestion()?.mode === suggestionMode) {
+        this.selectedSuggestion.set(null);
+      } else {
+        this.selectedSuggestion.set(suggestion);
+      }
+    }
+    console.log('Suggestion sélectionnée:', this.selectedSuggestion());
+  }
+
+  /**
+   * Réinitialiser la sélection de suggestion
+   */
+  resetSuggestion(): void {
+    this.selectedSuggestion.set(null);
+    this.currentMessage.set('');
   }
 }

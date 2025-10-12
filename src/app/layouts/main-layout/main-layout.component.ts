@@ -8,6 +8,7 @@ import {
   AfterContentInit,
   OnInit,
   inject,
+  input,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -63,6 +64,9 @@ import { ChatStore } from '../../stores/chat.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainLayoutComponent implements AfterContentInit, OnInit {
+  // Input pour contrôler l'affichage du header
+  showHeader = input<boolean>(false);
+
   title = 'Template Widget';
 
   // Injection du ChatStore (SignalStore)

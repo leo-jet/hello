@@ -1,0 +1,15 @@
+<button
+  (click)="onClick()"
+  [disabled]="disabled()"
+  [attr.aria-label]="ariaLabel() || label()"
+  [class]="'inline-flex items-center justify-center rounded-full transition-colors ' + getVariantClasses() + ' ' + getSizeClasses()"
+  [class.opacity-50]="disabled()"
+  [class.cursor-not-allowed]="disabled()"
+>
+  @if (icon()) {
+    <i [class]="icon() + ' ' + (label() ? 'mr-1' : '')"></i>
+  }
+  @if (label()) {
+    <span>{{ label() }}</span>
+  }
+</button>
