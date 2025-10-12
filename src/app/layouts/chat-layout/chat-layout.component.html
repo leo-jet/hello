@@ -1,13 +1,45 @@
 ﻿<app-main-layout>
+  <!-- Header avec les informations de la conversation -->
+  <div header class="border-b bg-white">
+    @if (currentConversation(); as conversation) {
+      <div class="p-4">
+        <h2 class="text-xl font-semibold text-gray-800">{{ conversation.title }}</h2>
+        <p class="text-sm text-gray-500 mt-1">
+          Dernier message: {{ conversation.lastMessage || 'Aucun message' }}
+        </p>
+      </div>
+    } @else {
+      <div class="p-4">
+        <p class="text-gray-500">Conversation non trouvée</p>
+      </div>
+    }
+  </div>
+
+  <!-- Zone de contenu principale pour les messages -->
+  <div class="flex-1 overflow-y-auto p-4 bg-gray-50">
+    @if (currentConversation(); as conversation) {
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center text-gray-500 py-8">
+          <p class="text-lg font-semibold">{{ conversation.title }}</p>
+          <p class="text-sm mt-2">Conversation ID: {{ conversation.id }}</p>
+          <p class="text-sm mt-1">Commencez à échanger en envoyant un message</p>
+        </div>
+      </div>
+    } @else {
+      <div class="max-w-4xl mx-auto text-center text-gray-500 py-8">
+        <p class="text-lg font-semibold">Cette conversation n'existe pas</p>
+        <p class="text-sm mt-2">Elle a peut-être été supprimée ou l'ID est incorrect.</p>
+      </div>
+    }
+  </div>
+
   <footer footer class="border-t bg-white shadow-lg">
     <div class="max-w-4xl mx-auto p-4">
       <app-main-chat-input
         [currentChatModeInfo]="currentChatModeInfo()"
         [modelSelectOptions]="modelSelectOptions"
-        [reasoningLevelSelectOptions]="reasoningLevelSelectOptions"
-        [selectedModelId]="chatStore.selectedModel()?.id || ''"
+        [selectedModel]="chatStore.selectedModel()"
         [selectedReasoningLevel]="selectedReasoningLevel()"
-        [hasReasoning]="chatStore.selectedModel()?.has_reasoning || false"
         [isSendButtonDisabled]="isSendButtonDisabled"
         (modelSelect)="onModelSelect($event)"
         (reasoningLevelSelect)="onReasoningLevelSelect($event)"

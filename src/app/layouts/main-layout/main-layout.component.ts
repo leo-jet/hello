@@ -36,15 +36,6 @@ import { MainConversationItemComponent } from './main-conversation-item/main-con
 import { DialogComponent } from '../../components/dialog/dialog.component';
 import { ChatStore } from '../../stores/chat.store';
 
-// Interface pour les modèles AI
-interface AIModel {
-  id: string;
-  display_name: string;
-  description: string;
-  has_reasoning: boolean;
-  reasoning_level: ('low' | 'medium' | 'high')[];
-}
-
 @Component({
   selector: 'app-main-layout',
   standalone: true,
@@ -101,8 +92,9 @@ export class MainLayoutComponent implements AfterContentInit, OnInit {
   }
 
   ngOnInit() {
-    // Charger les modèles LLM depuis le store
+    // Charger les modèles LLM et les conversations depuis le store
     this.chatStore.loadModels();
+    this.chatStore.loadConversations();
   }
 
   // État du menu expandable des modes de chat
@@ -142,41 +134,6 @@ export class MainLayoutComponent implements AfterContentInit, OnInit {
     },
   ];
 
-  // Modèles disponibles
-  availableModels: AIModel[] = [
-    {
-      id: 'gpt-4',
-      display_name: 'Chat GPT 4',
-      description: 'Modèle puissant pour tâches complexes',
-      has_reasoning: true,
-      reasoning_level: ['medium', 'high'],
-    },
-    {
-      id: 'gpt-5',
-      display_name: 'Chat GPT 5',
-      description: 'Nouvelles idées interessantes',
-      has_reasoning: true,
-      reasoning_level: ['low', 'medium'],
-    },
-    {
-      id: 'claude-3',
-      display_name: 'Claude 3',
-      description: "Excellent pour l'analyse et la créativité",
-      has_reasoning: true,
-      reasoning_level: ['medium', 'high'],
-    },
-    {
-      id: 'gemini-pro',
-      display_name: 'Gemini Pro',
-      description: 'Modèle multimodal avancé',
-      has_reasoning: false,
-      reasoning_level: [],
-    },
-  ];
-
-  // Modèle actuellement sélectionné
-  selectedModel = signal<AIModel>(this.availableModels[1]); // Par défaut GPT-5
-
   // Niveau de raisonnement sélectionné pour les modèles avec reasoning
   selectedReasoningLevel = signal<'low' | 'medium' | 'high'>('medium');
 
@@ -188,98 +145,32 @@ export class MainLayoutComponent implements AfterContentInit, OnInit {
 
   // Options formatées pour le composant select (modèles)
   get modelSelectOptions() {
-    return this.availableModels.map((model) => ({
-      value: model.id,
-      label: model.display_name,
+    return this.chatStore.availableModels().map((model) => ({
+      value: model, // Retourne l'objet complet
+      label: model.name,
       icon: '🤖',
     }));
   }
 
   // Options formatées pour le composant select (niveaux de raisonnement)
   get reasoningLevelSelectOptions() {
-    if (!this.selectedModel().has_reasoning) return [];
-
-    return this.selectedModel().reasoning_level.map((level) => ({
-      value: level,
-      label:
-        level === 'low'
-          ? 'Rapide'
-          : level === 'medium'
-          ? 'Équilibré'
-          : 'Approfondi',
-      icon: level === 'low' ? '⚡' : level === 'medium' ? '⚖️' : '🧠',
-    }));
+    return [
+      { value: 'low', label: 'Rapide', icon: '⚡' },
+      { value: 'medium', label: 'Équilibré', icon: '⚖️' },
+      { value: 'high', label: 'Approfondi', icon: '🧠' }
+    ];
   }
 
   // Alternative simple pour tester - utilisation directe de primitives
   get simpleReasoningLevels() {
-    if (!this.selectedModel().has_reasoning) return [];
-    return this.selectedModel().reasoning_level; // Retourne ['low', 'medium', 'high']
-  } // Année actuelle
+    return ['low', 'medium', 'high'] as const;
+  }
+
+  // Année actuelle
   currentYear = new Date().getFullYear();
 
   // Vérifier si du contenu footer personnalisé est fourni
   hasFooterContent = signal(false);
-
-  // Données de conversations pour l'interface de chat
-  conversations = [
-    {
-      id: '1',
-      title: 'Discussion sur Angular 19',
-      lastMessage: 'Comment implémenter les signals ?',
-      timestamp: new Date(Date.now() - 30 * 60 * 1000), // 30 min ago
-      unreadCount: 2,
-    },
-    {
-      id: '2',
-      title: 'Projet Template Widget',
-      lastMessage: 'La sidebar est presque terminée',
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2h ago
-      unreadCount: 0,
-    },
-    {
-      id: '3',
-      title: 'Aide sur TypeScript',
-      lastMessage: "Merci pour l'explication !",
-      timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000), // 5h ago
-      unreadCount: 1,
-    },
-    {
-      id: '4',
-      title: 'Optimisation Performance',
-      lastMessage: 'OnPush change detection...',
-      timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
-      unreadCount: 0,
-    },
-    {
-      id: '5',
-      title: 'Questions CSS',
-      lastMessage: 'Tailwind vs CSS modules ?',
-      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-      unreadCount: 3,
-    },
-    {
-      id: '6',
-      title: 'Déploiement Azure',
-      lastMessage: 'Configuration des pipelines',
-      timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
-      unreadCount: 0,
-    },
-    {
-      id: '7',
-      title: 'Révision de code',
-      lastMessage: 'PR approuvée ✅',
-      timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
-      unreadCount: 0,
-    },
-    {
-      id: '8',
-      title: 'Brainstorming Features',
-      lastMessage: 'Nouvelles idées interessantes',
-      timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
-      unreadCount: 1,
-    },
-  ];
 
   opts = [
     { id: 1, name: 'Option A', meta: 'A' },
@@ -370,9 +261,7 @@ export class MainLayoutComponent implements AfterContentInit, OnInit {
    */
   deleteConversation(chatId: string, event: Event) {
     event.stopPropagation(); // Empêcher la navigation vers le chat
-    this.conversations = this.conversations.filter(
-      (conv) => conv.id !== chatId
-    );
+    this.chatStore.deleteConversation(chatId);
     console.log('Conversation supprimée:', chatId);
   }
 
@@ -380,9 +269,7 @@ export class MainLayoutComponent implements AfterContentInit, OnInit {
    * Gérer la suppression d'une conversation depuis le composant enfant
    */
   handleDeleteConversation(conversation: any) {
-    this.conversations = this.conversations.filter(
-      (conv) => conv.id !== conversation.id
-    );
+    this.chatStore.deleteConversation(conversation.id);
     console.log('Conversation supprimée:', conversation.id);
   }
 
@@ -454,57 +341,16 @@ export class MainLayoutComponent implements AfterContentInit, OnInit {
   }
 
   // Méthode pour changer de modèle via le composant select
-  onModelSelect(modelId: unknown): void {
+  onModelSelect(model: any): void {
     // Appeler la méthode du store pour sélectionner le modèle
-    this.chatStore.selectModel(modelId as string);
-
-    const model = this.availableModels.find((m) => m.id === modelId);
-    if (model) {
-      this.selectedModel.set(model);
-
-      // Si le modèle a du reasoning, vérifier que le niveau sélectionné est valide
-      if (
-        model.has_reasoning &&
-        !model.reasoning_level.includes(this.selectedReasoningLevel())
-      ) {
-        // Prendre le premier niveau disponible par défaut
-        this.selectedReasoningLevel.set(model.reasoning_level[0]);
-      }
-
-      console.log('Modèle sélectionné:', model.display_name);
-      if (model.has_reasoning) {
-        console.log('Niveau de raisonnement:', this.selectedReasoningLevel());
-      }
-    }
+    this.chatStore.selectModel(model.id);
+    console.log('Modèle sélectionné:', model);
   }
 
   // Méthode pour changer le niveau de raisonnement via le composant select
   onReasoningLevelSelect(level: unknown): void {
     this.selectedReasoningLevel.set(level as 'low' | 'medium' | 'high');
     console.log('Niveau de raisonnement sélectionné:', level);
-  }
-
-  // Méthode pour changer de modèle (ancienne version - gardée pour compatibilité)
-  selectModel(model: AIModel): void {
-    // Appeler la méthode du store pour sélectionner le modèle
-    this.chatStore.selectModel(model.id);
-
-    this.selectedModel.set(model);
-    this.showModelSelector.set(false); // Fermer le sélecteur après sélection
-
-    // Si le modèle a du reasoning, vérifier que le niveau sélectionné est valide
-    if (
-      model.has_reasoning &&
-      !model.reasoning_level.includes(this.selectedReasoningLevel())
-    ) {
-      // Prendre le premier niveau disponible par défaut
-      this.selectedReasoningLevel.set(model.reasoning_level[0]);
-    }
-
-    console.log('Modèle sélectionné:', model.display_name);
-    if (model.has_reasoning) {
-      console.log('Niveau de raisonnement:', this.selectedReasoningLevel());
-    }
   }
 
   // Méthode pour basculer l'affichage du sélecteur de modèle
@@ -523,13 +369,6 @@ export class MainLayoutComponent implements AfterContentInit, OnInit {
   // Méthode pour basculer l'affichage du sélecteur de niveau de raisonnement
   toggleReasoningLevelSelector(): void {
     this.showReasoningLevelSelector.update((current) => !current);
-  }
-
-  // Computed pour obtenir les niveaux de raisonnement disponibles
-  get availableReasoningLevels(): ('low' | 'medium' | 'high')[] {
-    return this.selectedModel().has_reasoning
-      ? this.selectedModel().reasoning_level
-      : [];
   }
 
   // Méthodes pour le menu expandable des modes de chat

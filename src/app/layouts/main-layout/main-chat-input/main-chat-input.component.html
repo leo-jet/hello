@@ -30,9 +30,12 @@
     <!-- Sélecteur de modèle -->
     <app-select
       [options]="modelSelectOptions()"
-      [defaultValue]="selectedModelId()"
+      [defaultValue]="selectedModel()?.id"
+      [returnObject]="true"
       [openUpward]="true"
       placeholder="Choisir un modèle"
+      labelField="name"
+      valueField="id"
       (selection)="onModelSelect($event)"
       buttonClass="bg-gray-50 hover:bg-gray-100 border-gray-200 text-sm"
       menuClass="border-gray-200 min-w-[280px]"

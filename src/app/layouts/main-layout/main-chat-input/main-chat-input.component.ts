@@ -1,22 +1,10 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SelectComponent } from '../../../components/select/select.component';
 import { InputFieldComponent } from '../../../components/input-field/input-field.component';
 import { IconButtonComponent } from '../../../components/icon-button/icon-button.component';
+import { LlmModel } from '@app/models';
 
-export interface SelectOption {
-  value: string;
-  label: string;
-  icon?: string;
-}
-
-export interface AIModel {
-  id: string;
-  display_name: string;
-  description: string;
-  has_reasoning: boolean;
-  reasoning_level: ('low' | 'medium' | 'high')[];
-}
 
 export interface ChatModeInfo {
   mode: string | null;
@@ -33,30 +21,45 @@ export interface ChatModeInfo {
 })
 export class MainChatInputComponent {
   currentChatModeInfo = input<ChatModeInfo | null>(null);
-  chatModeSelectOptions = input<SelectOption[]>([]);
-  modelSelectOptions = input<SelectOption[]>([]);
-  reasoningLevelSelectOptions = input<SelectOption[]>([]);
+  chatModeSelectOptions = input<any[]>([]);
+  modelSelectOptions = input<any[]>([]);
   selectedChatMode = input<string | null>(null);
-  selectedModelId = input<string>('');
+  selectedModel = input<LlmModel | null>(null);
   selectedReasoningLevel = input<string>('medium');
-  hasReasoning = input<boolean>(false);
   isSendButtonDisabled = input<boolean>(true);
 
   chatModeSelect = output<string>();
-  modelSelect = output<string>();
+  modelSelect = output<LlmModel>();
   reasoningLevelSelect = output<string>();
   inputChange = output<string>();
   attachClick = output<void>();
   microphoneClick = output<void>();
   sendMessage = output<void>();
 
+  // Computed: afficher le sélecteur de raisonnement si le modèle a cette capacité
+  hasReasoning = computed(() => {
+    const model = this.selectedModel();
+    return model?.has_reasoning === true;
+  });
+
+  // Computed: options de niveau de raisonnement depuis le modèle sélectionné
+  reasoningLevelSelectOptions = computed(() => {
+    const model = this.selectedModel();
+    if (!model || !model.has_reasoning || !model.reasoning_level) {
+      return [];
+    }
+
+    return model.reasoning_level
+  });
+
+
   onChatModeSelect(event: any) {
     this.chatModeSelect.emit(event.value);
   }
 
-  onModelSelect(event: any) {
-    console.log('Event model select:', event);
-    this.modelSelect.emit(event);
+  onModelSelect(model: any) {
+    console.log('Model selected:', model);
+    this.modelSelect.emit(model as LlmModel);
   }
 
   onReasoningLevelSelect(event: any) {

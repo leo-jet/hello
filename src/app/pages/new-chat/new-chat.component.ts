@@ -1,16 +1,10 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { MainChatInputComponent, ChatModeInfo } from '../../layouts/main-layout/main-chat-input/main-chat-input.component';
 import { SuggestionCardComponent } from '../../components/suggestion-card/suggestion-card.component';
 import { ChatModeService, ChatMode } from '../../services/chat-mode.service';
-
-interface AIModel {
-  id: string;
-  display_name: string;
-  description: string;
-  has_reasoning: boolean;
-  reasoning_level: string[];
-}
+import { ChatStore } from '../../stores/chat.store';
 
 @Component({
   selector: 'app-new-chat',
@@ -19,43 +13,18 @@ interface AIModel {
   templateUrl: './new-chat.component.html',
   styleUrl: './new-chat.component.css'
 })
-export class NewChatComponent {
+export class NewChatComponent implements OnInit {
   private chatModeService = inject(ChatModeService);
+  private router = inject(Router);
+  readonly chatStore = inject(ChatStore);
 
-  // Modèles disponibles
-  availableModels: AIModel[] = [
-    {
-      id: 'gpt-4',
-      display_name: 'GPT-4',
-      description: 'Modèle le plus avancé',
-      has_reasoning: false,
-      reasoning_level: []
-    },
-    {
-      id: 'gpt-5',
-      display_name: 'GPT-5 Pro',
-      description: 'Modèle avec capacités de raisonnement',
-      has_reasoning: true,
-      reasoning_level: ['low', 'medium', 'high']
-    },
-    {
-      id: 'claude-3',
-      display_name: 'Claude 3 Opus',
-      description: 'Modèle performant d\'Anthropic',
-      has_reasoning: false,
-      reasoning_level: []
-    },
-    {
-      id: 'gemini-pro',
-      display_name: 'Gemini Pro',
-      description: 'Modèle multimodal avancé',
-      has_reasoning: false,
-      reasoning_level: []
-    }
-  ];
+  ngOnInit(): void {
+    // Charger les modèles LLM depuis le store
+    this.chatStore.loadModels();
+  }
 
-  // Modèle actuellement sélectionné
-  selectedModel = signal<AIModel>(this.availableModels[1]); // Par défaut GPT-5
+  // Message en cours de saisie
+  currentMessage = signal<string>('');
 
   // Niveau de raisonnement sélectionné
   selectedReasoningLevel = signal<'low' | 'medium' | 'high'>('medium');
@@ -85,22 +54,9 @@ export class NewChatComponent {
     }));
   }
 
-  // Options formatées pour le composant select (modèles)
+  // Options pour le composant select (modèles) - sans formatage
   get modelSelectOptions() {
-    return this.availableModels.map(model => ({
-      value: model.id,
-      label: model.display_name,
-      icon: '🤖'
-    }));
-  }
-
-  // Options formatées pour le composant select (niveaux de raisonnement)
-  get reasoningLevelSelectOptions() {
-    return [
-      { value: 'low', label: 'Faible', icon: '🔵' },
-      { value: 'medium', label: 'Moyen', icon: '🟡' },
-      { value: 'high', label: 'Élevé', icon: '🔴' }
-    ];
+    return this.chatStore.availableModels();
   }
 
   /**
@@ -117,12 +73,9 @@ export class NewChatComponent {
   /**
    * Gérer la sélection d'un modèle
    */
-  onModelSelect(modelId: string): void {
-    const model = this.availableModels.find(m => m.id === modelId);
-    if (model) {
-      this.selectedModel.set(model);
-      console.log('Modèle sélectionné:', model.display_name);
-    }
+  onModelSelect(model: any): void {
+    this.chatStore.selectModel(model);
+    console.log('Modèle sélectionné:', model);
   }
 
   /**
@@ -138,6 +91,7 @@ export class NewChatComponent {
    * Gérer le changement de texte dans l'input
    */
   onFooterInputChange(text: string): void {
+    this.currentMessage.set(text);
     console.log('Texte saisi:', text);
     // Activer/désactiver le bouton d'envoi selon le contenu
     this.isSendButtonDisabled = text.trim().length === 0;
@@ -155,8 +109,34 @@ export class NewChatComponent {
    * Gérer l'envoi du message
    */
   onSendMessage(): void {
-    console.log('Message envoyé');
-    // TODO: Implémenter l'envoi du message
+    const message = this.currentMessage().trim();
+
+    if (!message) {
+      return;
+    }
+
+    console.log('Message envoyé:', message);
+
+    // Créer une nouvelle conversation avec le message comme titre
+    const newConversation = this.chatStore.createNewConversation(
+      this.generateConversationTitle(message)
+    );
+
+    console.log('Nouvelle conversation créée:', newConversation);
+
+    // Naviguer vers la page de chat avec l'ID de la conversation
+    this.router.navigate(['/chat', newConversation.id]);
+  }
+
+  /**
+   * Générer un titre de conversation à partir du premier message
+   */
+  private generateConversationTitle(message: string): string {
+    // Prendre les 50 premiers caractères comme titre
+    const maxLength = 50;
+    return message.length > maxLength
+      ? message.substring(0, maxLength) + '...'
+      : message;
   }
 
   /**

@@ -159,6 +159,7 @@ export class SelectComponent implements OnInit, OnDestroy {
     const value = this.getValue(opt);
     this.selectedValue.set(value);
     this.selection.emit(this.returnObject ? opt : value);
+    console.log(`[Select:${this.instanceId}] Option selected:`, this.returnObject ? opt : value);
     this.close();
   }
 

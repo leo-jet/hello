@@ -1,4 +1,4 @@
-﻿import { Component, signal, computed, effect, inject, OnInit } from '@angular/core';
+﻿import { Component, signal, computed, effect, inject, OnInit, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -24,6 +24,9 @@ export class ChatLayoutComponent implements OnInit {
   // Sera initialisé dans le constructeur
   chatId;
 
+  // Conversation courante depuis le store
+  currentConversation = computed(() => this.chatStore.selectedConversation());
+
   constructor(
     private chatModeService: ChatModeService,
     private router: Router,
@@ -37,19 +40,23 @@ export class ChatLayoutComponent implements OnInit {
     );
 
     // Effect pour réagir aux changements de l'id
+    // untracked() empêche le tracking des modifications du store dans l'effect
     effect(() => {
       const id = this.chatId();
       if (id) {
         console.log('Chat ID changé:', id);
-        // Ici vous pouvez charger les données du chat, etc.
-        this.loadChatData(id);
+        // Exécuter sans tracker les modifications du store
+        untracked(() => {
+          this.chatStore.selectConversation(id);
+        });
       }
     });
   }
 
   ngOnInit() {
-    // Charger les modèles LLM depuis le store
+    // Charger les modèles LLM et les conversations depuis le store
     this.chatStore.loadModels();
+    this.chatStore.loadConversations();
   }
 
   currentChatModeInfo = computed(() => this.chatModeService.getCurrentModeInfo());
@@ -59,21 +66,13 @@ export class ChatLayoutComponent implements OnInit {
   get isSendButtonDisabled(): boolean { return this.messageValue().trim().length === 0; }
 
   get modelSelectOptions() {
-    return this.chatStore.availableModels().map(m => ({ value: m.id, label: m.name, icon: '' }));
+    return this.chatStore.availableModels().map(m => ({ value: m, label: m.name, icon: '🤖' }));
   }
 
-  get reasoningLevelSelectOptions() {
-    return [
-      { value: 'low', label: 'Faible', icon: '' },
-      { value: 'medium', label: 'Moyen', icon: '' },
-      { value: 'high', label: 'Élevé', icon: '' }
-    ];
-  }
-
-  onModelSelect(modelId: string): void {
+  onModelSelect(model: any): void {
     // Appeler la méthode du store pour sélectionner le modèle
-    console.log('Modèle sélectionné 999999999999999999999:', modelId);
-    this.chatStore.selectModel(modelId);
+    console.log('Modèle sélectionné:', model);
+    this.chatStore.selectModel(model.id);
   }
 
   onReasoningLevelSelect(level: string): void {
@@ -85,14 +84,22 @@ export class ChatLayoutComponent implements OnInit {
 
   onSendMessage(): void {
     if (this.messageValue().trim()) {
-      console.log('Message:', this.messageValue());
+      const message = this.messageValue();
+      const conversationId = this.chatId();
+
+      console.log('Message:', message);
+      console.log('Conversation ID:', conversationId);
+
+      // TODO: Ajouter le message à la conversation courante
+      if (conversationId) {
+        // Mettre à jour le lastMessage de la conversation
+        this.chatStore.updateConversation(conversationId, {
+          lastMessage: message,
+          timestamp: new Date()
+        });
+      }
+
       this.messageValue.set('');
     }
-  }
-
-  // Méthode pour charger les données du chat quand l'id change
-  private loadChatData(id: string): void {
-    console.log('Chargement des données pour le chat:', id);
-    // Implémentez ici la logique de chargement des messages, etc.
   }
 }

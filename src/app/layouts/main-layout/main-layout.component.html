@@ -38,7 +38,7 @@
       </div>
 
       <app-list>
-        @for (conversation of conversations; track conversation.id) {
+        @for (conversation of chatStore.conversations(); track conversation.id) {
           <app-main-conversation-item
             [conversation]="conversation"
             (conversationClick)="navigateToChat($event.id)"
@@ -96,7 +96,7 @@
     >
       <!-- Contenu header personnalisé -->
       <div slot="right">
-        <ng-content select="[header]"> {{chatStore.selectedModelId()}}</ng-content>
+        <ng-content select="[header]"> {{chatStore.selectedModel()?.name || 'Aucun modèle'}}</ng-content>
       </div>
 
       <!-- Actions additionnelles -->

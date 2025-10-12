@@ -48,16 +48,14 @@
   </div>
 
   <!-- Chat Input -->
-  <div class="w-full max-w-4xl">
+  <div class="w-full">
     <app-main-chat-input
       [currentChatModeInfo]="currentChatModeInfo()"
       [chatModeSelectOptions]="chatModeSelectOptions"
       [selectedChatMode]="selectedChatMode()"
       [modelSelectOptions]="modelSelectOptions"
-      [reasoningLevelSelectOptions]="reasoningLevelSelectOptions"
-      [selectedModelId]="selectedModel().id"
+      [selectedModel]="chatStore.selectedModel()"
       [selectedReasoningLevel]="selectedReasoningLevel()"
-      [hasReasoning]="selectedModel().has_reasoning"
       [isSendButtonDisabled]="isSendButtonDisabled"
       (chatModeSelect)="onChatModeSelect($event)"
       (modelSelect)="onModelSelect($event)"

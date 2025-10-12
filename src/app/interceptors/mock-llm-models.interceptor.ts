@@ -16,7 +16,7 @@ export const mockLlmModelsInterceptor: HttpInterceptorFn = (req, next) => {
     const mockModels: LlmModel[] = [
       {
         id: 'gpt-4',
-        name: 'GPT-4 sddfdfffdfdfdfdddf',
+        name: 'GPT-4',
         provider: 'OpenAI',
         description: 'Modèle avancé',
         maxTokens: 8192,
@@ -51,8 +51,8 @@ export const mockLlmModelsInterceptor: HttpInterceptorFn = (req, next) => {
         description: 'Multimodal',
         maxTokens: 32768,
         isAvailable: true,
-        has_reasoning: false,
-        reasoning_level: []
+        has_reasoning: true,
+        reasoning_level: ['low', 'medium',]
       }
     ];
 
