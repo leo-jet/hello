@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { LlmModel } from '@app/models';
+import { LlmModelResponse } from '@app/models';
 
 export type ChatMode = 'basic' | 'advanced' | 'rag' | null;
 
@@ -77,17 +77,12 @@ export class ChatModeService {
   /**
    * Charge les modèles LLM depuis l'API
    */
-  async loadLlmModels(): Promise<LlmModel[]> {
-    try {
-      // Appel API (remplacez l'URL par votre endpoint réel)
-      const models = await firstValueFrom(
-        this.http.get<LlmModel[]>('/api/llm-models')
-      );
-
-      return models;
-    } catch (error) {
-      console.error('Erreur lors du chargement des modèles LLM:', error);
-      throw error;
-    }
+  async loadLlmModels(): Promise<LlmModelResponse> {
+    return new Promise((resolve, reject) => {
+      this.http.get<LlmModelResponse>('/api/llm-models').subscribe({
+        next: (response) => resolve(response),
+        error: (err) => reject(err)
+      });
+    });
   }
 }

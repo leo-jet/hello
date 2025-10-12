@@ -2,7 +2,7 @@ import { computed, inject } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, from } from 'rxjs';
-import { LlmModel } from '@app/models';
+import { LlmModel, LlmProvider } from '@app/models';
 import { ChatModeService } from '@app/services/chat-mode.service';
 
 /**
@@ -25,6 +25,7 @@ export const ChatStore = signalStore(
   // État
   withState({
     llmModels: [] as LlmModel[],
+    llmProviders: [] as LlmProvider[],
     selectedModel: null as LlmModel | null,
     isLoading: false,
     conversations: [] as Conversation[],
@@ -54,10 +55,11 @@ export const ChatStore = signalStore(
         tap(() => patchState(store, { isLoading: true })),
         switchMap(() => from(chatModeService.loadLlmModels())),
         tap({
-          next: (models) => {
-            const selectedModel = store.selectedModel() || models.find(m => m.isAvailable) || null;
+          next: (response) => {
+            const selectedModel = store.selectedModel() || response.models.find(m => m.isAvailable) || null;
             patchState(store, {
-              llmModels: models,
+              llmModels: response.models,
+              llmProviders: response.providers,
               isLoading: false,
               selectedModel
             });

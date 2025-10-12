@@ -1,7 +1,7 @@
 import { HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { of } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { LlmModel } from '@app/models';
+import { LlmModel, LlmProvider } from '@app/models';
 
 /**
  * Mock HTTP Interceptor pour les appels API LLM Models
@@ -56,10 +56,28 @@ export const mockLlmModelsInterceptor: HttpInterceptorFn = (req, next) => {
       }
     ];
 
+    const mockProviders: LlmProvider[] = [
+      {
+        id: 'openai',
+        name: 'OpenAI'
+      },
+      {
+        id: 'anthropic',
+        name: 'Anthropic'
+      },
+      {
+        id: 'google',
+        name: 'Google'
+      }
+    ];
+
     // Créer une réponse HTTP mockée
     const mockResponse = new HttpResponse({
       status: 200,
-      body: mockModels
+      body: {
+        models: mockModels,
+        providers: mockProviders
+      }
     });
 
     // Retourner un Observable avec un délai simulé (500ms)

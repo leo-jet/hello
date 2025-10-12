@@ -11,3 +11,13 @@ export interface LlmModel {
   has_reasoning?: boolean;
   reasoning_level?: ('low' | 'medium' | 'high')[];
 }
+
+export interface LlmProvider {
+  id: string;
+  name: string;
+}
+
+export interface LlmModelResponse {
+  models: LlmModel[];
+  providers: LlmProvider[];
+}
