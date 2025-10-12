@@ -29,9 +29,10 @@ export interface BaseSuggestionResponse {
 export abstract class BaseSuggestionService {
   /**
    * Soumet une requête au service
+   * Peut retourner void ou Observable selon le besoin
    * À implémenter par chaque service de suggestion
    */
-  abstract submit(request: BaseSuggestionRequest): Observable<BaseSuggestionResponse>;
+  abstract submit(request: BaseSuggestionRequest): void | Observable<BaseSuggestionResponse>;
 
   /**
    * Valide la requête avant soumission

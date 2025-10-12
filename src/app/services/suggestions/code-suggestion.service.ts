@@ -33,19 +33,27 @@ export class CodeSuggestionService extends BaseSuggestionService {
   /**
    * Soumet une requête de code
    */
-  submit(request: CodeRequest): Observable<CodeResponse> {
+  submit(request: CodeRequest): void {
     if (!this.validateRequest(request)) {
       throw new Error('Invalid request: message and modelId are required');
     }
 
     const payload = this.prepareCodePayload(request);
 
-    return this.http.post<CodeResponse>('/api/suggestions/code', payload).pipe(
+    this.http.post<CodeResponse>('/api/suggestions/code', payload).pipe(
       map(response => ({
         ...response,
         timestamp: new Date(response.timestamp)
       }))
-    );
+    ).subscribe({
+      next: (response) => {
+        console.log('Code response received:', response);
+        // Le traitement de la réponse peut être géré ici ou via un callback
+      },
+      error: (err) => {
+        console.error('Code request failed:', err);
+      }
+    });
   }
 
   /**
